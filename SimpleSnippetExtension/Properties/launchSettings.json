@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "SimpleSnippetExtension (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "SimpleSnippetExtension (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
