@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.System;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
@@ -17,23 +18,41 @@ internal sealed class SearchListPage : ListPage
     
     public SearchListPage(SettingsManager settingsManager)
     {
+        Name = "Search Snippets";
+        Id = "SearchListPage";
+        
         _settingsManager = settingsManager;
 
-        _items = _settingsManager.LoadSnippet();
-        
+        // _items = _settingsManager.LoadSnippet();
         EmptyContent = new CommandItem()
         {
             Title = "No Snippets",
             Subtitle = "You can add snippets from the Add page.",
+            MoreCommands = [
+                new CommandContextItem(new Add1Page(_settingsManager))
+                {
+                    Title = "Add Snippet",
+                }
+            ]
         };
 
-        HasMoreItems = true;
-        
-        RaiseItemsChanged();
+        _settingsManager.SnippetSaved += (sender) =>
+        {
+            RaiseItemsChanged();
+        };
+        _settingsManager.SnippetUpdated += (sender) =>
+        {
+            RaiseItemsChanged();
+        };
+        _settingsManager.SnippetRemoved += (sender) =>
+        {
+            RaiseItemsChanged();
+        };
     }
     
     public override IListItem[] GetItems()
     {
+        _items = _settingsManager.LoadSnippet();
         return _items
             .Select(item => new ListItem(new CopyTextCommand(item.Content)
             {
@@ -47,22 +66,27 @@ internal sealed class SearchListPage : ListPage
                 Title = item.Title,
                 Subtitle = item.Content,
                 MoreCommands = [
-                    new CommandContextItem(title:"Remove", result: CommandResult.Confirm(new ConfirmationArgs()
+                    new CommandContextItem(title:"Remove Snippet", name: "Remove Snippet", result: CommandResult.Confirm(new ConfirmationArgs()
                         {
                             Title = "Remove Snippet?",
                             Description = "Remove the snippet: " + item.Title,
-                            PrimaryCommand = new AnonymousCommand(new Action(() =>
-                            {
-                                new RemoveCommand(_settingsManager, item).Invoke("");
-                                _items = _settingsManager.LoadSnippet();
-                                RaiseItemsChanged();
-                            }))
-                            {
-                                Result = CommandResult.KeepOpen()
-                            },
-                            IsPrimaryCommandCritical = true
+                            PrimaryCommand = new RemoveCommand(_settingsManager, item),
+                            IsPrimaryCommandCritical = true,
                         })
                     )
+                    {
+                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.Number1)
+                    },
+                    new CommandContextItem(new Add1Page(_settingsManager, item))
+                    {
+                        Title = "Update Snippet",
+                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.Number2)
+                    },
+                    new CommandContextItem(new Add1Page(_settingsManager))
+                    {
+                        Title = "Add Snippet",
+                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.Number3)
+                    }
                 ]
             })
             .ToArray<IListItem>();

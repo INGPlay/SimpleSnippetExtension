@@ -8,7 +8,7 @@ namespace SimpleSnippetExtension.Helper;
 
 public class SettingsManager : JsonSettingsManager
 {
-    public readonly string ListPath;
+    private readonly string ListPath;
 
     private static readonly string _namespace = "simplesnippet";
 
@@ -35,6 +35,8 @@ public class SettingsManager : JsonSettingsManager
         // now, the state is just next to the exe
         return Path.Combine(directory, "list.json");
     }
+    
+    public event Action<SnippetItem>? SnippetSaved;
     
     public void SaveSnippet(SnippetItem snippetItem)
     {
@@ -65,12 +67,17 @@ public class SettingsManager : JsonSettingsManager
             // Serialize the updated list back to JSON and save it
             var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
             File.WriteAllText(ListPath, listJson);
+            
+            // 이벤트 호출
+            SnippetSaved?.Invoke(snippetItem);
         }
         catch (Exception ex)
         {
             ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
         }
     }
+    
+    public event Action<SnippetItem>? SnippetRemoved;
     
     public void RemoveSnippet(SnippetItem snippetItem)
     {
@@ -96,6 +103,51 @@ public class SettingsManager : JsonSettingsManager
             // Serialize the updated list back to JSON and save it
             var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
             File.WriteAllText(ListPath, listJson);
+            
+            // 이벤트 호출
+            SnippetRemoved?.Invoke(snippetItem);
+        }
+        catch (Exception ex)
+        {
+            ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
+        }
+    }
+
+    public event Action<SnippetItem>? SnippetUpdated;
+    
+    public void UpdateSnippet(SnippetItem snippetItem)
+    {
+        if (snippetItem == null)
+        {
+            return;
+        }
+
+        try
+        {
+            if (!File.Exists(ListPath))
+            {
+                return;
+            }
+
+            var existingContent = File.ReadAllText(ListPath);
+            var listItemList = JsonSerializer.Deserialize<List<SnippetItem>>(existingContent, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem) ?? [];
+
+            // Id로 기존 항목을 찾아서 수정
+            var index = listItemList.FindIndex(item => item.Id == snippetItem.Id);
+            if (index != -1)
+            {
+                // listItemList[index] = snippetItem;
+                
+                // Remove the old item and add the updated one
+                listItemList.RemoveAll(item => item.Id == snippetItem.Id);
+                listItemList.Add(snippetItem);
+
+                var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
+                File.WriteAllText(ListPath, listJson);
+                
+                // 이벤트 호출
+                SnippetUpdated?.Invoke(snippetItem);
+            }
         }
         catch (Exception ex)
         {

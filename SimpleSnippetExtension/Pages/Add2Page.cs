@@ -9,19 +9,26 @@ namespace SimpleSnippetExtension;
 public class Add2Page : DynamicListPage
 {
     private readonly SettingsManager _settingsManager;
-
-    private ListItem _listItem;
+    
     private List<ListItem> _items;
     private ListItem _emptyItem;
+    private SnippetItem _target;
 
     public Add2Page(SettingsManager settingsManager, SnippetItem snippetItem)
     {
+        Name = string.IsNullOrWhiteSpace(snippetItem.Id)
+            ? "Add Snippet"
+            : "Edit Snippet";
+        
         _settingsManager = settingsManager;
         _emptyItem = new ListItem(new NoOpCommand())
         {
             Title = snippetItem.Title,
-            Subtitle = "",
+            Subtitle = string.IsNullOrWhiteSpace(snippetItem.Id) 
+                ? "Type content to create a new snippet." 
+                : "Type content to update the snippet.",
         };
+        _target = snippetItem;
         
         Query(snippetItem);
     }
@@ -54,7 +61,7 @@ public class Add2Page : DynamicListPage
 
     public override void UpdateSearchText(string oldSearch, string newSearch)
     {
-        SnippetItem snippetItem = new SnippetItem(_emptyItem.Title, newSearch);
+        SnippetItem snippetItem = new SnippetItem(_target.Title, newSearch, id: _target.Id);
         Query(snippetItem);
     }
 }

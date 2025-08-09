@@ -22,11 +22,7 @@ public partial class SimpleSnippetExtensionCommandsProvider : CommandProvider
         _commands = [
             new CommandItem(new SearchListPage(_settingsManager))
             {
-                Title = DisplayName + " - List",
-            },
-            new CommandItem(new ManagePage(_settingsManager))
-            {
-                Title = DisplayName + " - Manage"
+                Title = DisplayName
             },
         ];
     }

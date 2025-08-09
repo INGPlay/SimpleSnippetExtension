@@ -14,7 +14,7 @@ public class RemoveCommand : IInvokableCommand
     public event TypedEventHandler<object, IPropChangedEventArgs>? PropChanged;
     public IIconInfo Icon { get; }
     public string Id { get; }
-    public string Name { get; } = "Remove Command";
+    public string Name { get; } = "Remove Snippet";
 
     public ICommandResult Invoke(object sender)
     {

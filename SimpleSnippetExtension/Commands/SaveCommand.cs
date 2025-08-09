@@ -13,16 +13,27 @@ public class SaveCommand : IInvokableCommand
     public event TypedEventHandler<object, IPropChangedEventArgs>? PropChanged;
     public IIconInfo Icon { get; }
     public string Id { get; }
-    public string Name { get; } = "Save Command";
+    public string Name { get; } = "Save Snippet";
 
     public ICommandResult Invoke(object sender)
     {
-        _settingsManager.SaveSnippet(_item);
-        
-        // new ToastStatusMessage("Snippet added successfully!")
-        new ToastStatusMessage(SettingsManager.ListJsonpath())
-            .Show();
-        return CommandResult.GoBack();
+        if (string.IsNullOrWhiteSpace(_item.Id))
+        {
+            _settingsManager.SaveSnippet(_item);
+            
+            return CommandResult.ShowToast(new ToastArgs()
+            {
+                Message = "Snippet added successfully!",
+                Result = CommandResult.GoBack()
+            });
+        }
+
+        _settingsManager.UpdateSnippet(_item);
+        return CommandResult.ShowToast(new ToastArgs()
+        {
+            Message = "Snippet updated successfully!",
+            Result = CommandResult.GoBack()
+        });
     }
 
     private readonly SettingsManager _settingsManager;

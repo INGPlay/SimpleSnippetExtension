@@ -12,20 +12,33 @@ internal sealed class Add1Page : DynamicListPage
 {
     private readonly SettingsManager _settingsManager;
     
-    private const string DataFilePath = "data.json";
     private List<ListItem> _items;
     private ListItem _emptyItem;
+    private SnippetItem _target;
 
-    public Add1Page(SettingsManager settingsManager)
+    public Add1Page(SettingsManager settingsManager, SnippetItem snippetItem)
     {
+        Name = string.IsNullOrWhiteSpace(snippetItem.Id)
+            ? "Add Snippet"
+            : "Edit Snippet";
+        
         _settingsManager = settingsManager;
         _emptyItem = new ListItem(new NoOpCommand())
         {
             Title = "",
-            Subtitle = "Type a title to create a new snippet.",
+            Subtitle = string.IsNullOrWhiteSpace(snippetItem.Id) 
+                ? "Type a title to create a new snippet." 
+                : "Type a title to update the snippet.",
         };
-        
-        Query(new SnippetItem("", ""));
+        _target = snippetItem;
+
+        SearchText = _target.Title;
+        Query(snippetItem);
+    }
+
+    public Add1Page(SettingsManager settingsManager) 
+        : this(settingsManager, new SnippetItem("", ""))
+    {
     }
 
     public override IListItem[] GetItems()
@@ -46,7 +59,7 @@ internal sealed class Add1Page : DynamicListPage
                 new ListItem(new Add2Page(_settingsManager, snippetItem))
                 {
                     Title = snippetItem.Title,
-                    Subtitle = _emptyItem.Subtitle
+                    Subtitle = string.IsNullOrWhiteSpace(snippetItem.Content) ? _emptyItem.Subtitle : snippetItem.Content
                 }
             };
         }
@@ -56,7 +69,7 @@ internal sealed class Add1Page : DynamicListPage
 
     public override void UpdateSearchText(string oldSearch, string newSearch)
     {
-        SnippetItem snippetItem = new SnippetItem(newSearch, "");
+        SnippetItem snippetItem = new SnippetItem(newSearch, _target.Content, id:_target.Id);
         Query(snippetItem);
     }
 }
