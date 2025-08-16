@@ -11,9 +11,9 @@ public class SnippetItem
 
     public string Content { get; private set; }
 
-    public SnippetItem(string title, string content, string id = "")
+    public SnippetItem(string? title, string? content, string? id = "")
     {
-        Id = id;
+        Id = id == null ? "" : id;
         Title = title;
         Content = content;
     }

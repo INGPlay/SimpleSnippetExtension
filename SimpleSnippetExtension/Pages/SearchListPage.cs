@@ -29,7 +29,7 @@ internal sealed class SearchListPage : ListPage
             Title = "No Snippets",
             Subtitle = "You can add snippets from the Add page.",
             MoreCommands = [
-                new CommandContextItem(new Add1Page(_settingsManager))
+                new CommandContextItem(new EditPage(_settingsManager))
                 {
                     Title = "Add Snippet",
                 }
@@ -53,6 +53,7 @@ internal sealed class SearchListPage : ListPage
     public override IListItem[] GetItems()
     {
         _items = _settingsManager.LoadSnippet();
+        
         return _items
             .Select(item => new ListItem(new CopyTextCommand(item.Content)
             {
@@ -66,6 +67,11 @@ internal sealed class SearchListPage : ListPage
                 Title = item.Title,
                 Subtitle = item.Content,
                 MoreCommands = [
+                    new CommandContextItem(new EditPage(_settingsManager, item))
+                    {
+                        Title = "Edit Snippet",
+                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.E)
+                    },
                     new CommandContextItem(title:"Remove Snippet", name: "Remove Snippet", result: CommandResult.Confirm(new ConfirmationArgs()
                         {
                             Title = "Remove Snippet?",
@@ -75,18 +81,14 @@ internal sealed class SearchListPage : ListPage
                         })
                     )
                     {
-                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.Number1)
+                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.R)
                     },
-                    new CommandContextItem(new Add1Page(_settingsManager, item))
-                    {
-                        Title = "Update Snippet",
-                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.Number2)
-                    },
-                    new CommandContextItem(new Add1Page(_settingsManager))
+                    new CommandContextItem(new EditPage(_settingsManager))
                     {
                         Title = "Add Snippet",
-                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.Number3)
-                    }
+                        RequestedShortcut = KeyChordHelpers.FromModifiers(vkey: VirtualKey.A)
+                    },
+
                 ]
             })
             .ToArray<IListItem>();
