@@ -8,7 +8,7 @@ namespace SimpleSnippetExtension.Helper;
 
 public class SettingsManager : JsonSettingsManager
 {
-    private readonly string ListPath;
+    public readonly string ListPath;
 
     private static readonly string _namespace = "simplesnippet";
 

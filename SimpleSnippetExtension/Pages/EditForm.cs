@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
@@ -15,48 +14,74 @@ internal sealed class EditForm : FormContent
     {
         _settingsManager = settingsManager;
         
+        string replacedContent = snippetItem.Content
+                .Replace("\\", "\\\\")      // SubmitForm의 payload에서 \ 기호로 인해 경로가 일부 삭제되는 것을 막기 위해 추가
+                .Replace("\"", "\\\"").Replace("'", "\'")       // 따옴표 문자 처리
+                .Replace("\n", "\\n").Replace("\r", "\\r")       // 엔터 관련
+                ;
+
         TemplateJson = $$"""
-                                {
-                                    "type": "AdaptiveCard",
-                                    "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
-                                    "version": "1.5",
-                                    "body": [
-                                        {
-                                            "type": "Input.Text",
-                                            "label": "Id",
-                                            "placeholder": "Placeholder text",
-                                            "id": "Id",
-                                            "isVisible": false,
-                                            "value": "{{snippetItem.Id}}"
-                                        },
-                                        {
-                                            "type": "Input.Text",
-                                            "label": "Title",
-                                            "placeholder": "Placeholder text",
-                                            "id": "Title",
-                                            "isRequired": true,
-                                            "errorMessage": "Title is Required.",
-                                            "value": "{{snippetItem.Title}}"
-                                        },
-                                        {
-                                            "type": "Input.Text",
-                                            "label": "Content",
-                                            "placeholder": "Placeholder text",
-                                            "id": "Content",
-                                            "isRequired": true,
-                                            "errorMessage": "Content is Required.",
-                                            "isMultiline": true,
-                                            "value" : "{{snippetItem.Content}}"
-                                        }
-                                    ],
-                                    "actions": [
-                                        {
-                                            "type": "Action.Submit",
-                                            "title": "Save"
-                                        }
-                                    ]
-                                }
-                                """;
+                         {
+                             "type": "AdaptiveCard",
+                             "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+                             "version": "1.5",
+                             "body": [
+                                 {
+                                     "type": "Input.Text",
+                                     "label": "Id",
+                                     "placeholder": "Type Title.",
+                                     "id": "Id",
+                                     "isVisible": false,
+                                     "value": "{{snippetItem.Id}}"
+                                 },
+                                 {
+                                     "type": "Input.Text",
+                                     "label": "Title",
+                                     "placeholder": "Title?",
+                                     "id": "Title",
+                                     "isRequired": true,
+                                     "errorMessage": "Title is Required.",
+                                     "value": "{{snippetItem.Title}}"
+                                 },
+                                 {
+                                     "type": "Input.Text",
+                                     "label": "Content",
+                                     "placeholder": "Content?",
+                                     "id": "Content",
+                                     "isRequired": true,
+                                     "errorMessage": "Content is Required.",
+                                     "isMultiline": true,
+                                     "height": "stretch",
+                                     "value" : "{{replacedContent}}"
+                                 },
+                                 {
+                                     "type": "Input.ChoiceSet",
+                                     "label": "Type",
+                                     "choices": [
+                                         {
+                                             "title": "Text",
+                                             "value": "{{SnippetType.Text}}"
+                                         },
+                                         {
+                                             "title": "URL",
+                                             "value": "{{SnippetType.Url}}"
+                                         }
+                                     ],
+                                     "placeholder": "Choice a type.",
+                                     "isRequired": true,
+                                     "id" : "Type",
+                                     "value": "{{snippetItem.Type}}",
+                                     "errorMessage": "Type is Required."
+                                 }
+                             ],
+                             "actions": [
+                                 {
+                                     "type": "Action.Submit",
+                                     "title": "Save"
+                                 }
+                             ]
+                         }
+                         """;
     }
 
     public EditForm(SettingsManager settingsManager) 
@@ -71,10 +96,13 @@ internal sealed class EditForm : FormContent
         {
             return CommandResult.KeepOpen();
         }
-
-        SnippetItem snippetItem = new SnippetItem(formInput["Title"]?.ToString() ?? "",
+        
+        SnippetItem snippetItem = new SnippetItem(
+            formInput["Title"]?.ToString() ?? "",
             formInput["Content"]?.ToString() ?? "",
-            formInput["Id"]?.ToString() ?? "");
+            formInput["Id"]?.ToString() ?? "",
+            (SnippetType)Enum.Parse(typeof(SnippetType), formInput["Type"]?.ToString(), ignoreCase: true)
+            );
         return new SaveCommand(_settingsManager, snippetItem).Invoke(null);
     }
 }
@@ -82,7 +110,7 @@ internal sealed class EditForm : FormContent
 internal sealed class EditPage : ContentPage
 {
     private readonly EditForm _editForm;
-
+    
     public EditPage(SettingsManager settingsManager, SnippetItem snippetItem)
     {
         _editForm = new EditForm(settingsManager, snippetItem);
