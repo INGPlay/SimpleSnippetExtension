@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.System;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
@@ -10,6 +11,7 @@ internal class SnippetListItem : ListItem
 {
     private SettingsManager _settingsManager;
     private SnippetCommandItem _commandItem;
+    private readonly Lazy<Details> _details;
     
     public SnippetListItem(SettingsManager settingsManager, SnippetItem item) 
         : base(
@@ -36,6 +38,29 @@ internal class SnippetListItem : ListItem
         
         Title = item.Title;
         Subtitle = item.SummaryContent;
+        Tags = new[]
+        {
+            new Tag(item.Type.ToString())
+        };
+        Details = new Details()
+        {
+            Title = item.Title,
+            Body = item.Type.ToString(),
+            // Body = item.Content     // Replace content with HTML line breaks
+            //     .Replace("\r\n", "<br>")
+            //     .Replace("\r", "<br>")
+            //     .Replace("\n", "<br>"),
+            Metadata =
+            [
+                new DetailsElement()
+                {
+                    Data = new DetailsLink()
+                    {
+                        Text = item.Content
+                    }
+                },
+            ]
+        };
         MoreCommands = ContextItems(item);
     }
 

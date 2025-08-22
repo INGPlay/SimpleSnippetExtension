@@ -20,12 +20,12 @@ internal sealed class SearchListPage : ListPage
     
     public SearchListPage(SettingsManager settingsManager)
     {
-        Name = "Search Snippets";
-        Id = "SearchListPage";
-        
         _settingsManager = settingsManager;
         _commandItem = new SnippetCommandItem(_settingsManager);
         
+        Name = "Search Snippets";
+        Id = "SearchListPage";
+        ShowDetails = true;
         EmptyContent = new CommandItem()
         {
             Title = "No Snippets",

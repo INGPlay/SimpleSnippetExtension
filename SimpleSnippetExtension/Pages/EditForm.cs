@@ -18,6 +18,7 @@ internal sealed class EditForm : FormContent
                 .Replace("\\", "\\\\")      // SubmitForm의 payload에서 \ 기호로 인해 경로가 일부 삭제되는 것을 막기 위해 추가
                 .Replace("\"", "\\\"").Replace("'", "\'")       // 따옴표 문자 처리
                 .Replace("\n", "\\n").Replace("\r", "\\r")       // 엔터 관련
+                .Replace("\t", "\\t")       // 탭 문자 처리
                 ;
 
         TemplateJson = $$"""
