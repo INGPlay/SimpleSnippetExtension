@@ -16,12 +16,13 @@ public partial class SimpleSnippetExtensionCommandsProvider : CommandProvider
     public SimpleSnippetExtensionCommandsProvider()
     {
         DisplayName = "Simple Snippet";
-        Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        Icon = new IconInfo("📝");
         Settings = _settingsManager.Settings;
         
         _commands = [
             new CommandItem(new SearchListPage(_settingsManager))
             {
+                Icon = this.Icon,
                 Title = DisplayName
             },
         ];
