@@ -6,7 +6,7 @@ namespace SimpleSnippetExtension.Helper;
 public enum SnippetType
 {
     Text,
-    Url,
+    URL
 }
 
 public class SnippetItem

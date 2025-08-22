@@ -59,12 +59,12 @@ internal sealed class EditForm : FormContent
                                      "label": "Type",
                                      "choices": [
                                          {
-                                             "title": "Text",
+                                             "title": "{{SnippetType.Text}}",
                                              "value": "{{SnippetType.Text}}"
                                          },
                                          {
-                                             "title": "URL",
-                                             "value": "{{SnippetType.Url}}"
+                                             "title": "{{SnippetType.URL}}",
+                                             "value": "{{SnippetType.URL}}"
                                          }
                                      ],
                                      "placeholder": "Choice a type.",

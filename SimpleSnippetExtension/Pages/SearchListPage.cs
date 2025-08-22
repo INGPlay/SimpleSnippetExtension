@@ -15,9 +15,8 @@ internal sealed class SearchListPage : ListPage
     private readonly SettingsManager _settingsManager;
     
     private List<SnippetItem> _items;
-    
-    private IContextItem _AddCommandItem;
-    private IContextItem _OpenJsonCommandItem;
+
+    private SnippetCommandItem _commandItem;
     
     public SearchListPage(SettingsManager settingsManager)
     {
@@ -25,25 +24,16 @@ internal sealed class SearchListPage : ListPage
         Id = "SearchListPage";
         
         _settingsManager = settingsManager;
-
-        _AddCommandItem = new CommandContextItem(new EditPage(_settingsManager))
-        {
-            Title = "Add Snippet",
-            RequestedShortcut =
-                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.A)
-        };
-        _OpenJsonCommandItem = new CommandContextItem(new OpenUrlCommand(_settingsManager.ListPath))
-        {
-            Title = "Open Json File",
-            RequestedShortcut =
-                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.J)
-        };
+        _commandItem = new SnippetCommandItem(_settingsManager);
         
         EmptyContent = new CommandItem()
         {
             Title = "No Snippets",
             Subtitle = "You can add snippets from the Add Snippet page.",
-            MoreCommands = [_AddCommandItem, _OpenJsonCommandItem]
+            MoreCommands = [
+                _commandItem.AddCommandItem(), 
+                _commandItem.OpenJsonCommandItem()
+            ]
         };
 
         _settingsManager.SnippetSaved += (sender) =>
@@ -100,7 +90,7 @@ internal sealed class SearchListPage : ListPage
                             })
                         };
                         break;
-                    case SnippetType.Url:
+                    case SnippetType.URL:
                         command = new OpenUrlCommand(item.Content)
                         {
                             Result = CommandResult.Hide()
@@ -109,35 +99,8 @@ internal sealed class SearchListPage : ListPage
                     default:
                         throw new ArgumentOutOfRangeException(nameof(SnippetType));
                 }
-            
-                return new ListItem(command)
-                {
-                    Title = item.Title,
-                    Subtitle = item.SummaryContent,
-                    MoreCommands = [
-                        _AddCommandItem,
-                        new CommandContextItem(new EditPage(_settingsManager, item))
-                        {
-                            Title = "Edit Snippet",
-                            RequestedShortcut =
-                                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.E)
-                        },
-                        new CommandContextItem(title: "Delete Snippet", name: "Delete Snippet",
-                            result: CommandResult.Confirm(new ConfirmationArgs()
-                            {
-                                Title = "Delete Snippet?",
-                                Description = "Delete the snippet: " + item.Title,
-                                PrimaryCommand = new RemoveCommand(_settingsManager, item),
-                                IsPrimaryCommandCritical = true,
-                            })
-                        )
-                        {
-                            RequestedShortcut =
-                                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.D)
-                        },
-                        _OpenJsonCommandItem
-                    ]
-                };
+
+                return new SnippetListItem(_settingsManager, item);
             })
             .ToArray<IListItem>();
     }
