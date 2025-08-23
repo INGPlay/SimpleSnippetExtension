@@ -31,8 +31,7 @@ internal sealed class SearchListPage : ListPage
             Title = "No Snippets",
             Subtitle = "You can add snippets from the Add Snippet page.",
             MoreCommands = [
-                _commandItem.AddCommandItem(), 
-                _commandItem.OpenJsonCommandItem()
+                _commandItem.AddCommandItem(),
             ]
         };
 
