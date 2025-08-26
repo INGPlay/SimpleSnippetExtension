@@ -66,6 +66,8 @@
 
     <!-- When publishing trimmed, make sure to treat trimming warnings as build errors -->
     <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
+    <PackageCertificateThumbprint>27A8B4980BB7725802C047CA9C2E93BDA22E54C3</PackageCertificateThumbprint>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
 
   </PropertyGroup>
 

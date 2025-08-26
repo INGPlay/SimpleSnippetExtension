@@ -2,3 +2,4 @@
 SimpleSnippetExtension/obj
 .idea
 .vs
+*.pfx
