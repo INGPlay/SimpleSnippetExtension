@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Windows.System;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;
@@ -11,7 +9,6 @@ internal class SnippetListItem : ListItem
 {
     private SettingsManager _settingsManager;
     private SnippetCommandItem _commandItem;
-    private readonly Lazy<Details> _details;
     
     public SnippetListItem(SettingsManager settingsManager, SnippetItem item) 
         : base(
