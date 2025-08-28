@@ -5,7 +5,7 @@ using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-internal class SnippetListItem : ListItem
+internal sealed class SnippetListItem : ListItem
 {
     private SettingsManager _settingsManager;
     private SnippetCommandItem _commandItem;
