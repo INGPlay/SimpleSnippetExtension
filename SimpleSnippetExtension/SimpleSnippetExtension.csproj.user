@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Source>S:\다운로드\3209234_brief_fraction_information_particle_snippet_icon.png</Source>
+    <MediumTileSource>S:\다운로드\3209234_brief_fraction_information_particle_snippet_icon.png</MediumTileSource>
+    <AppIconSource>S:\다운로드\3209234_brief_fraction_information_particle_snippet_icon.png</AppIconSource>
+    <PackageLogoSource>S:\다운로드\3209234_brief_fraction_information_particle_snippet_icon.png</PackageLogoSource>
+    <SmallTileSource>S:\다운로드\3209234_brief_fraction_information_particle_snippet_icon.png</SmallTileSource>
+    <WideTileSource>S:\다운로드\3209234_brief_fraction_information_particle_snippet_icon.png</WideTileSource>
+    <LargeTileSource>S:\다운로드\3209234_brief_fraction_information_particle_snippet_icon.png</LargeTileSource>
+    <SplashScreenSource>S:\다운로드\3209234_brief_fraction_information_particle_snippet_icon.png</SplashScreenSource>
+  </PropertyGroup>
+</Project>

@@ -1,7 +1,3 @@
-// Copyright (c) Microsoft Corporation
-// The Microsoft Corporation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;
@@ -16,9 +12,9 @@ public partial class SimpleSnippetExtensionCommandsProvider : CommandProvider
     public SimpleSnippetExtensionCommandsProvider()
     {
         DisplayName = "Simple Snippet";
-        Icon = new IconInfo("📝");
+        Icon = Icons.Logo;
         Settings = _settingsManager.Settings;
-        
+
         _commands = [
             new CommandItem(new SearchListPage(_settingsManager))
             {

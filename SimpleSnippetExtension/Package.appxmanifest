@@ -9,14 +9,14 @@
   IgnorableNamespaces="uap uap3 rescap">
 
   <Identity
-    Name="SimpleSnippetExtension"
-    Publisher="CN=atker"
+    Name="INGPlay.SimpleSnippetforCommandPalette"
+    Publisher="CN=9F2EEB3A-6512-40C8-B96B-05E5C6BE430F"
     Version="0.0.1.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
   <Properties>
-    <DisplayName>Simple Snippet</DisplayName>
+    <DisplayName>Simple Snippet for Command Palette</DisplayName>
     <PublisherDisplayName>INGPlay</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -36,12 +36,11 @@
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
         DisplayName="Simple Snippet"
-        Description="Simple Snippet"
-        BackgroundColor="transparent"
-        Square150x150Logo="Assets\Square150x150Logo.png"
-        Square44x44Logo="Assets\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        Description="Simple Snippet for Command Palette"
+        BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png"    Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"   Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png">
+        </uap:DefaultTile >
+        <uap:SplashScreen Image="Assets\SplashScreen.png"/>
       </uap:VisualElements>
       <Extensions>
         <com:Extension Category="windows.comServer">
