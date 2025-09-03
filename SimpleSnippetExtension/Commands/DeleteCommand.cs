@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-public class RemoveCommand : IInvokableCommand
+public class DeleteCommand : IInvokableCommand
 {
     public event TypedEventHandler<object, IPropChangedEventArgs>? PropChanged;
     public IIconInfo Icon { get; }
     public string Id { get; }
-    public string Name { get; } = "Remove Snippet";
+    public string Name { get; } = "Delete Snippet";
 
     public ICommandResult Invoke(object sender)
     {
@@ -25,7 +21,7 @@ public class RemoveCommand : IInvokableCommand
 
     private readonly SettingsManager _settingsManager;
     private readonly SnippetItem _item;
-    public RemoveCommand(SettingsManager settingsManager, SnippetItem item)
+    public DeleteCommand(SettingsManager settingsManager, SnippetItem item)
     {
         _settingsManager = settingsManager;
         _item = item;

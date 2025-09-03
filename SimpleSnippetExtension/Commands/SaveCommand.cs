@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;

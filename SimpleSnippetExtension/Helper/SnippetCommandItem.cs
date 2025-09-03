@@ -17,9 +17,9 @@ public class SnippetCommandItem
     {
         return new CommandContextItem(new EditPage(_settingsManager))
         {
-            Title = "Add Snippet",
+            Title = "Write Snippet",
             RequestedShortcut =
-                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.A)
+                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.W)
         };
     }
 
@@ -50,7 +50,7 @@ public class SnippetCommandItem
             {
                 Title = "Delete Snippet?",
                 Description = "Delete the snippet: " + item.Title,
-                PrimaryCommand = new RemoveCommand(_settingsManager, item),
+                PrimaryCommand = new DeleteCommand(_settingsManager, item),
                 IsPrimaryCommandCritical = true,
             })
         )
