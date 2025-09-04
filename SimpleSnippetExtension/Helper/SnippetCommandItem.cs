@@ -1,6 +1,6 @@
-﻿using Windows.System;
-using Microsoft.CommandPalette.Extensions;
+﻿using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using Windows.System;
 
 namespace SimpleSnippetExtension.Helper;
 
@@ -17,9 +17,9 @@ public class SnippetCommandItem
     {
         return new CommandContextItem(new EditPage(_settingsManager))
         {
-            Title = "Write Snippet",
+            Title = "New Snippet",
             RequestedShortcut =
-                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.W)
+                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.N)
         };
     }
 

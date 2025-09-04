@@ -116,7 +116,7 @@ internal sealed class EditPage : ContentPage
     {
         _editForm = new EditForm(settingsManager, snippetItem);
         Name = string.IsNullOrWhiteSpace(snippetItem.Id) 
-            ? "Write Snippet" 
+            ? "New Snippet" 
             : "Edit Snippet";
     }
 
