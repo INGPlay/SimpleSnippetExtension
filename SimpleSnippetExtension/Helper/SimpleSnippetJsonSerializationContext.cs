@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace SimpleSnippetExtension.Helper;
@@ -7,6 +8,7 @@ namespace SimpleSnippetExtension.Helper;
 [JsonSerializable(typeof(int))]
 [JsonSerializable(typeof(string))]
 [JsonSerializable(typeof(bool))]
+[JsonSerializable(typeof(DateTime))]
 [JsonSerializable(typeof(SnippetType))]
 [JsonSerializable(typeof(SnippetItem))]
 [JsonSerializable(typeof(List<SnippetItem>))]

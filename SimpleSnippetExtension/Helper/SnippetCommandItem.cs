@@ -25,7 +25,7 @@ public class SnippetCommandItem
 
     public IContextItem OpenJsonCommandItem()
     {
-        return new CommandContextItem(new OpenUrlCommand(_settingsManager.ListPath))
+        return new CommandContextItem(new OpenUrlCommand(_settingsManager.CommandManager.ListPath))
         {
             Title = "Open Json File",
             RequestedShortcut =

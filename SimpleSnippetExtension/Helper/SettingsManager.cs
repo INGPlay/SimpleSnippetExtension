@@ -1,21 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
+﻿using System.Collections.Generic;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using System.IO;
 
 namespace SimpleSnippetExtension.Helper;
 
 public class SettingsManager : JsonSettingsManager
 {
-    public readonly string ListPath;
+    public CommandManager CommandManager { get; private set; }
 
-    private static readonly string _namespace = "simplesnippet";
+    private readonly ChoiceSetSetting _sortEmpty;
+    private readonly ChoiceSetSetting _sortSearching;
+
+    private readonly List<ChoiceSetSetting.Choice> sortOptions = new List<ChoiceSetSetting.Choice>()
+    {
+        new ChoiceSetSetting.Choice("Created Date (New to Old)", "0"),
+        new ChoiceSetSetting.Choice("Created Date (Old to New)", "1"),
+        new ChoiceSetSetting.Choice("Updated Date (New to Old)", "2"),
+        new ChoiceSetSetting.Choice("Updated Date (Old to New)", "3"),
+        new ChoiceSetSetting.Choice("Title (A → Z)", "4"),
+        new ChoiceSetSetting.Choice("Title (Z → A)", "5"),
+    };
 
     public SettingsManager()
     {
+        CommandManager = new CommandManager();
         FilePath = SettingsJsonPath();
-        ListPath = ListJsonpath();
+        
+        _sortEmpty = new ChoiceSetSetting(
+            "1",
+            "Sorting when the search box is empty",
+            "Sorting when the search box is empty",
+            sortOptions
+        );
+        _sortSearching = new ChoiceSetSetting(
+            "2",
+            "Sorting while searching",
+            "Sorting while searching",
+            sortOptions
+        );
+        
+        Settings.Add(_sortEmpty);
+        Settings.Add(_sortSearching);
     }
 
     internal static string SettingsJsonPath()
@@ -25,155 +50,5 @@ public class SettingsManager : JsonSettingsManager
 
         // now, the state is just next to the exe
         return Path.Combine(directory, "settings.json");
-    }
-
-    internal static string ListJsonpath()
-    {
-        var directory = Utilities.BaseSettingsPath("INGPlay.SimpleSnippet");
-        Directory.CreateDirectory(directory);
-
-        // now, the state is just next to the exe
-        return Path.Combine(directory, "list.json");
-    }
-    
-    public event Action<SnippetItem>? SnippetSaved;
-    
-    public void SaveSnippet(SnippetItem snippetItem)
-    {
-        if (snippetItem == null)
-        {
-            return;
-        }
-        
-        try
-        {
-            List<SnippetItem> listItemList;
-
-            // Check if the file exists and load existing history
-            if (File.Exists(ListPath))
-            {
-                var existingContent = File.ReadAllText(ListPath);
-                listItemList = JsonSerializer.Deserialize<List<SnippetItem>>(existingContent, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem) ?? [];
-            }
-            else
-            {
-                listItemList = [];
-            }
-
-            snippetItem.makeId();
-            // Add the new SnippetItem to the list
-            listItemList.Add(snippetItem);
-
-            // Serialize the updated list back to JSON and save it
-            var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
-            File.WriteAllText(ListPath, listJson);
-            
-            // 이벤트 호출
-            SnippetSaved?.Invoke(snippetItem);
-        }
-        catch (Exception ex)
-        {
-            ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
-        }
-    }
-    
-    public event Action<SnippetItem>? SnippetRemoved;
-    
-    public void RemoveSnippet(SnippetItem snippetItem)
-    {
-        if (snippetItem == null)
-        {
-            return;
-        }
-
-        try
-        {
-            // Check if the file exists and load existing history
-            if (!File.Exists(ListPath))
-            {
-                return;
-            }
-
-            var existingContent = File.ReadAllText(ListPath);
-            var listItemList = JsonSerializer.Deserialize<List<SnippetItem>>(existingContent, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem) ?? [];
-
-            // Remove the specified SnippetItem from the list
-            listItemList.RemoveAll(item => item.Id == snippetItem.Id);
-
-            // Serialize the updated list back to JSON and save it
-            var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
-            File.WriteAllText(ListPath, listJson);
-            
-            // 이벤트 호출
-            SnippetRemoved?.Invoke(snippetItem);
-        }
-        catch (Exception ex)
-        {
-            ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
-        }
-    }
-
-    public event Action<SnippetItem>? SnippetUpdated;
-    
-    public void UpdateSnippet(SnippetItem snippetItem)
-    {
-        if (snippetItem == null)
-        {
-            return;
-        }
-
-        try
-        {
-            if (!File.Exists(ListPath))
-            {
-                return;
-            }
-
-            var existingContent = File.ReadAllText(ListPath);
-            var listItemList = JsonSerializer.Deserialize<List<SnippetItem>>(existingContent, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem) ?? [];
-
-            // Id로 기존 항목을 찾아서 수정
-            var index = listItemList.FindIndex(item => item.Id == snippetItem.Id);
-            if (index != -1)
-            {
-                // listItemList[index] = snippetItem;
-                
-                // Remove the old item and add the updated one
-                listItemList.RemoveAll(item => item.Id == snippetItem.Id);
-                listItemList.Add(snippetItem);
-
-                var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
-                File.WriteAllText(ListPath, listJson);
-                
-                // 이벤트 호출
-                SnippetUpdated?.Invoke(snippetItem);
-            }
-        }
-        catch (Exception ex)
-        {
-            ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
-        }
-    }
-    
-    public List<SnippetItem> LoadSnippet()
-    {
-        try
-        {
-            if (!File.Exists(ListPath))
-            {
-                return [];
-            }
-
-            // Read and deserialize JSON into a list of HistoryItem objects
-            var fileContent = File.ReadAllText(ListPath);
-            var snippetItemList = JsonSerializer.Deserialize<List<SnippetItem>>(fileContent, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem) ?? [];
-            snippetItemList.Reverse();
-            return snippetItemList;
-        }
-        catch (Exception ex)
-        {
-            ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
-            return [];
-        }
     }
 }

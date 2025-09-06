@@ -21,7 +21,19 @@ public class SnippetItem
     
     public SnippetType Type { get; private set; }
 
-    public SnippetItem(string? title, string? content, string? id = "", SnippetType type = SnippetType.Text)
+    public DateTime? Created { get; private set; }
+    public DateTime? LastUpdated { get; private set; }
+    public DateTime? LastCopied { get; private set; }
+
+    public SnippetItem(
+        string? title, 
+        string? content, 
+        string? id = "", 
+        SnippetType type = SnippetType.Text,
+        DateTime? created = null,
+        DateTime? lastUpdated = null,
+        DateTime? lastCopied = null
+    )
     {
         Id = id == null ? "" : id;
         Title = title;
@@ -37,11 +49,29 @@ public class SnippetItem
         SummaryContent = content.Length > 150
             ? string.Concat(SummaryContent.AsSpan(0, 150), "...")
             : SummaryContent;
+
+        Created = created ?? DateTime.MinValue;
+        LastUpdated = lastUpdated ?? DateTime.MinValue;
+        LastCopied = lastCopied;
     }
 
     public void makeId()
     {
         Id = Guid.NewGuid().ToString();
+    }
+
+    public SnippetItem makeSaveModel()
+    {
+        this.Id = Guid.NewGuid().ToString();
+        this.Created = DateTime.UtcNow;
+        this.LastUpdated = DateTime.UtcNow;
+        return this;
+    }
+
+    public SnippetItem makeUpdateModel()
+    {
+        this.LastUpdated = DateTime.UtcNow;
+        return this;
     }
     
     public string ToJson() => JsonSerializer.Serialize(this, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);

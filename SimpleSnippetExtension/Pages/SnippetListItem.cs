@@ -67,7 +67,8 @@ internal sealed class SnippetListItem : ListItem
             _commandItem.AddCommandItem(),
             _commandItem.EditCommandItem(item),
             _commandItem.DeleteCommandItem(item),
-            _commandItem.OpenJsonCommandItem()
+            _commandItem.OpenJsonCommandItem(),
+            new CommandContextItem(_settingsManager.Settings.SettingsPage)
         ];
     }
 }

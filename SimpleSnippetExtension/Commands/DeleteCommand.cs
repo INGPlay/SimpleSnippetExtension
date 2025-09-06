@@ -14,16 +14,16 @@ public class DeleteCommand : IInvokableCommand
 
     public ICommandResult Invoke(object sender)
     {
-        _settingsManager.RemoveSnippet(_item);
+        _commandManager.DeleteSnippet(_item);
         
         return CommandResult.KeepOpen();
     }
 
-    private readonly SettingsManager _settingsManager;
+    private readonly CommandManager _commandManager;
     private readonly SnippetItem _item;
     public DeleteCommand(SettingsManager settingsManager, SnippetItem item)
     {
-        _settingsManager = settingsManager;
+        _commandManager = settingsManager.CommandManager;
         _item = item;
     }
 }

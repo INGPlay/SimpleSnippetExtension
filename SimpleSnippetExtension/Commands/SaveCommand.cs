@@ -16,7 +16,7 @@ public class SaveCommand : IInvokableCommand
     {
         if (string.IsNullOrWhiteSpace(_item.Id))
         {
-            _settingsManager.SaveSnippet(_item);
+            _commandManager.SaveSnippet(_item);
             
             return CommandResult.ShowToast(new ToastArgs()
             {
@@ -25,7 +25,7 @@ public class SaveCommand : IInvokableCommand
             });
         }
 
-        _settingsManager.UpdateSnippet(_item);
+        _commandManager.UpdateSnippet(_item);
         return CommandResult.ShowToast(new ToastArgs()
         {
             Message = "Snippet updated successfully!",
@@ -33,11 +33,11 @@ public class SaveCommand : IInvokableCommand
         });
     }
 
-    private readonly SettingsManager _settingsManager;
+    private readonly CommandManager _commandManager;
     private readonly SnippetItem _item;
     public SaveCommand(SettingsManager settingsManager, SnippetItem item)
     {
-        _settingsManager = settingsManager;
+        _commandManager = settingsManager.CommandManager;
         _item = item;
     }
 }

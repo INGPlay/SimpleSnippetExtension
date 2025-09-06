@@ -19,7 +19,10 @@ public partial class SimpleSnippetExtensionCommandsProvider : CommandProvider
             new CommandItem(new SearchListPage(_settingsManager))
             {
                 Icon = this.Icon,
-                Title = DisplayName
+                Title = DisplayName,
+                MoreCommands = [
+                    new CommandContextItem(_settingsManager.Settings.SettingsPage)
+                ]
             },
         ];
     }

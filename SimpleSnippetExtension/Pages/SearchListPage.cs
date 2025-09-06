@@ -1,28 +1,27 @@
-﻿using System;
+﻿using Microsoft.CommandPalette.Extensions;
+using Microsoft.CommandPalette.Extensions.Toolkit;
+using SimpleSnippetExtension.Helper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.System;
-using Microsoft.CommandPalette.Extensions;
-using Microsoft.CommandPalette.Extensions.Toolkit;
-using SimpleSnippetExtension;
-using SimpleSnippetExtension.Helper;
-using ListItem = Microsoft.CommandPalette.Extensions.Toolkit.ListItem;
 
 namespace SimpleSnippetExtension;
 
 internal sealed class SearchListPage : ListPage
 {
     private readonly SettingsManager _settingsManager;
-    
+    private readonly CommandManager _commandManager;
+
     private List<SnippetItem> _items;
 
     private SnippetCommandItem _commandItem;
-    
+
     public SearchListPage(SettingsManager settingsManager)
     {
         _settingsManager = settingsManager;
+        _commandManager =  settingsManager.CommandManager;
         _commandItem = new SnippetCommandItem(_settingsManager);
-        
+
         Name = "Search Snippets";
         Id = "SearchListPage";
         ShowDetails = true;
@@ -32,26 +31,31 @@ internal sealed class SearchListPage : ListPage
             Subtitle = "You can add snippets from the Add Snippet page.",
             MoreCommands = [
                 _commandItem.AddCommandItem(),
+                new CommandContextItem(_settingsManager.Settings.SettingsPage)
             ]
         };
 
-        _settingsManager.SnippetSaved += (sender) =>
+        _commandManager.SnippetSaved += (sender) =>
         {
             RaiseItemsChanged();
         };
-        _settingsManager.SnippetUpdated += (sender) =>
+        _commandManager.SnippetUpdated += (sender) =>
         {
             RaiseItemsChanged();
         };
-        _settingsManager.SnippetRemoved += (sender) =>
+        _commandManager.SnippetDeleted += (sender) =>
+        {
+            RaiseItemsChanged();
+        };
+        _settingsManager.Settings.SettingsChanged += (sender, settings) =>
         {
             RaiseItemsChanged();
         };
     }
-    
+
     public override IListItem[] GetItems()
     {
-        _items = _settingsManager.LoadSnippet();
+        _items = _commandManager.LoadSnippet();
 
         // if (SearchText == null || SearchText.Length == 0)
         // {
@@ -70,7 +74,7 @@ internal sealed class SearchListPage : ListPage
 
         return makeList(_items);
     }
-    
+
     private IListItem[] makeList(List<SnippetItem> items)
     {
         return items
@@ -79,7 +83,7 @@ internal sealed class SearchListPage : ListPage
                 InvokableCommand command;
                 switch (item.Type)
                 {
-                    case SnippetType.Text :
+                    case SnippetType.Text:
                         command = new CopyTextCommand(item.Content)
                         {
                             Result = CommandResult.ShowToast(new ToastArgs()
