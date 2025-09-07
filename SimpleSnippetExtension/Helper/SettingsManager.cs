@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using System.IO;
 
@@ -13,13 +14,18 @@ public class SettingsManager : JsonSettingsManager
 
     private readonly List<ChoiceSetSetting.Choice> sortOptions = new List<ChoiceSetSetting.Choice>()
     {
-        new ChoiceSetSetting.Choice("Created Date (New to Old)", "0"),
-        new ChoiceSetSetting.Choice("Created Date (Old to New)", "1"),
-        new ChoiceSetSetting.Choice("Updated Date (New to Old)", "2"),
-        new ChoiceSetSetting.Choice("Updated Date (Old to New)", "3"),
-        new ChoiceSetSetting.Choice("Title (A → Z)", "4"),
-        new ChoiceSetSetting.Choice("Title (Z → A)", "5"),
+        SortOptionChoice(SortOptions.CREATED_NEW_TO_OLD),       // 0
+        SortOptionChoice(SortOptions.CREATED_OLD_TO_NEW),       // 1
+        SortOptionChoice(SortOptions.UPDATED_NEW_TO_OLD),       // 2
+        SortOptionChoice(SortOptions.UPDATED_OLD_TO_NEW),       // 3
+        SortOptionChoice(SortOptions.TITLE_A_TO_Z),             // 4
+        SortOptionChoice(SortOptions.TITLE_Z_TO_A),             // 5
     };
+
+    private static ChoiceSetSetting.Choice SortOptionChoice(SortOptions sortOption)
+    {
+        return new ChoiceSetSetting.Choice(sortOption.DisplayName, sortOption.Id);
+    }
 
     public SettingsManager()
     {
@@ -27,20 +33,56 @@ public class SettingsManager : JsonSettingsManager
         FilePath = SettingsJsonPath();
         
         _sortEmpty = new ChoiceSetSetting(
-            "1",
+            "0",
             "Sorting when the search box is empty",
             "Sorting when the search box is empty",
             sortOptions
         );
+        if (!Settings.TryGetSetting<string>(_sortEmpty.Key, out _))     // default setting
+        {
+            _sortEmpty.Value = sortOptions[0].Value;
+        }
+        
+        
         _sortSearching = new ChoiceSetSetting(
-            "2",
+            "1",
             "Sorting while searching",
             "Sorting while searching",
             sortOptions
         );
+        if (!Settings.TryGetSetting<string>(_sortSearching.Key, out _))     // default setting
+        {
+            _sortSearching.Value = sortOptions[4].Value;
+        }
         
         Settings.Add(_sortEmpty);
         Settings.Add(_sortSearching);
+    }
+
+    public SortOptions SortEmpty
+    {
+        get
+        {
+            string id;
+            var isGet = Settings.TryGetSetting(_sortEmpty.Key, out id);
+            if (isGet)
+                return SortOptions.FromId(id);
+
+            throw new Exception("SortEmpty Get Error");
+        }
+    }
+    
+    public SortOptions SortSearching
+    {
+        get
+        {
+            string id;
+            var isGet = Settings.TryGetSetting(_sortSearching.Key, out id);
+            if (isGet)
+                return SortOptions.FromId(id);
+
+            throw new Exception("SortSearching Get Error");
+        }
     }
 
     internal static string SettingsJsonPath()

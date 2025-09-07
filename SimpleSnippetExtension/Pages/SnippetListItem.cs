@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;
@@ -34,7 +35,10 @@ internal sealed class SnippetListItem : ListItem
         _commandItem = new SnippetCommandItem(_settingsManager);
         
         Title = item.Title;
-        Subtitle = item.SummaryContent;
+        // Subtitle = item.SummaryContent;
+        Subtitle = item.Created.HasValue 
+            ? makeViewDateFormat(item.Created.Value)
+            : "";
         Tags = new[]
         {
             new Tag(item.Type.ToString())
@@ -43,10 +47,6 @@ internal sealed class SnippetListItem : ListItem
         {
             Title = item.Title,
             Body = item.Type.ToString(),
-            // Body = item.Content     // Replace content with HTML line breaks
-            //     .Replace("\r\n", "<br>")
-            //     .Replace("\r", "<br>")
-            //     .Replace("\n", "<br>"),
             Metadata =
             [
                 new DetailsElement()
@@ -54,6 +54,13 @@ internal sealed class SnippetListItem : ListItem
                     Data = new DetailsLink()
                     {
                         Text = item.Content
+                    }
+                },
+                new DetailsElement()
+                {
+                    Data = new DetailsTags()
+                    {
+                        Tags = makeDateTag(item)
                     }
                 },
             ]
@@ -68,7 +75,48 @@ internal sealed class SnippetListItem : ListItem
             _commandItem.EditCommandItem(item),
             _commandItem.DeleteCommandItem(item),
             _commandItem.OpenJsonCommandItem(),
-            new CommandContextItem(_settingsManager.Settings.SettingsPage)
         ];
+    }
+
+    private ITag[] makeDateTag(SnippetItem item)
+    {
+        var tagList = Array.Empty<ITag>().ToList();
+        if (item.Created.HasValue)
+        {
+            tagList.Add(
+                new Tag($"Created : {makeViewDateFormat(item.Created.Value)}")
+            );
+        }
+
+        if (item.LastUpdated.HasValue)
+        {
+            tagList.Add(
+                new Tag($"Last Updated : {makeViewDateFormat(item.LastUpdated.Value)}")
+            );
+        }
+
+        if (item.LastCopied.HasValue)
+        {
+            tagList.Add(
+                new Tag($"Last Copied : {makeViewDateFormat(item.LastCopied.Value)}")
+            ); 
+        }
+
+        return tagList.ToArray();
+    }
+
+    private String makeViewDateFormat(DateTime date)
+    {
+        if (date.Date == DateTime.Today)
+        {
+            return $"Today, {date.ToString("hh:mm tt")}";
+        }
+
+        if (date.Date.Year == DateTime.Today.Year)
+        {
+            return $"{date.ToString("MMM dd, hh:mm tt")}";
+        }
+        
+        return date.ToString("MMM d, yyyy, hh:mm tt");
     }
 }

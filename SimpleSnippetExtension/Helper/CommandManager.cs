@@ -153,8 +153,8 @@ public class CommandManager
             ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
         }
     }
-
-    public List<SnippetItem> LoadSnippet()
+    
+    public List<SnippetItem> LoadSnippet(SortOptions sortOption)
     {
         try
         {
@@ -166,7 +166,7 @@ public class CommandManager
             // Read and deserialize JSON into a list of HistoryItem objects
             var fileContent = File.ReadAllText(ListPath);
             var snippetItemList = JsonSerializer.Deserialize<List<SnippetItem>>(fileContent, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem) ?? [];
-            return GetSortedList(snippetItemList);
+            return GetSortedList(snippetItemList, sortOption);
         }
         catch (Exception ex)
         {
@@ -175,8 +175,13 @@ public class CommandManager
         }
     }
 
-    private List<SnippetItem> GetSortedList(List<SnippetItem> snippetItemList)
+    public List<SnippetItem> LoadSnippet()
     {
-        return snippetItemList.OrderByDescending(item => item.Created).ToList();
+        return LoadSnippet(SortOptions.CREATED_NEW_TO_OLD);
+    }
+
+    private List<SnippetItem> GetSortedList(List<SnippetItem> snippetItemList, SortOptions sortOptions)
+    {
+        return sortOptions.SortFunc(snippetItemList).ToList();
     }
 }
