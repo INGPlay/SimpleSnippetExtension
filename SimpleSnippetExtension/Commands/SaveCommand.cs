@@ -25,7 +25,8 @@ public class SaveCommand : IInvokableCommand
             });
         }
 
-        _commandManager.UpdateSnippet(_item);
+        var lastUpdatedItem = _item.makeLastUpdatedModel();
+        _commandManager.UpdateSnippet(lastUpdatedItem);
         return CommandResult.ShowToast(new ToastArgs()
         {
             Message = "Snippet updated successfully!",

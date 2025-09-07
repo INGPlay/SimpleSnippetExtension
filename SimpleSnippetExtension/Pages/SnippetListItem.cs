@@ -15,7 +15,7 @@ internal sealed class SnippetListItem : ListItem
         : base(
             item.Type switch
             {
-                    SnippetType.Text => new CopyTextCommand(item.Content)
+                    SnippetType.Text => new SnippetCopyTextCommand(settingsManager, item)
                     {
                         Result = CommandResult.ShowToast(new ToastArgs()
                         {
@@ -23,7 +23,7 @@ internal sealed class SnippetListItem : ListItem
                             Result = CommandResult.Hide()
                         })
                     },
-                    SnippetType.URL => new OpenUrlCommand(item.Content)
+                    SnippetType.URL => new SnippetOpenUrlCommand(settingsManager, item)
                     {
                         Result = CommandResult.Hide()
                     },
@@ -35,10 +35,7 @@ internal sealed class SnippetListItem : ListItem
         _commandItem = new SnippetCommandItem(_settingsManager);
         
         Title = item.Title;
-        // Subtitle = item.SummaryContent;
-        Subtitle = item.Created.HasValue 
-            ? makeViewDateFormat(item.Created.Value)
-            : "";
+        Subtitle = item.SummaryContent;
         Tags = new[]
         {
             new Tag(item.Type.ToString())

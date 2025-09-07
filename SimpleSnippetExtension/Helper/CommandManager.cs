@@ -119,7 +119,6 @@ public class CommandManager
         {
             return;
         }
-        snippetItem = snippetItem.makeUpdateModel();
 
         try
         {

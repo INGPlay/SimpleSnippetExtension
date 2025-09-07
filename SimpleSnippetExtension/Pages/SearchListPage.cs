@@ -50,6 +50,7 @@ internal sealed class SearchListPage : ListPage
             ]
         };
 
+        // EventHandler
         _commandManager.SnippetSaved += (sender) =>
         {
             RaiseItemsChanged();
@@ -79,54 +80,13 @@ internal sealed class SearchListPage : ListPage
             _items = _commandManager.LoadSnippet(_settingsManager.SortSearching);
         }
 
-        // if (SearchText == null || SearchText.Length == 0)
-        // {
-        //     IListItem[] addPage = new IListItem[] { 
-        //         new ListItem(
-        //             new EditPage(_settingsManager))
-        //         {
-        //             Title = "Add Snippet"
-        //         } 
-        //     };
-        //
-        //     return addPage
-        //         .Concat(makeList(_items))
-        //         .ToArray();;
-        // }
-
         return makeList(_items);
     }
 
     private IListItem[] makeList(List<SnippetItem> items)
     {
         return items
-            .Select(item =>
-            {
-                InvokableCommand command;
-                switch (item.Type)
-                {
-                    case SnippetType.Text:
-                        command = new CopyTextCommand(item.Content)
-                        {
-                            Result = CommandResult.ShowToast(new ToastArgs()
-                            {
-                                Message = "Copied to clipboard",
-                                Result = CommandResult.Hide()
-                            })
-                        };
-                        break;
-                    case SnippetType.URL:
-                        command = new OpenUrlCommand(item.Content)
-                        {
-                            Result = CommandResult.Hide()
-                        };
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(SnippetType));
-                }
-
-                return new SnippetListItem(_settingsManager, item);
-            })
+            .Select(item => new SnippetListItem(_settingsManager, item))
             .ToArray<IListItem>();
     }
 }

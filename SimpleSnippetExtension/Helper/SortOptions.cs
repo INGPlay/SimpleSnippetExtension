@@ -47,7 +47,12 @@ public class SortOptions
         "Title (Z to A)",
         items => items.OrderByDescending(item => item.Title)
     );
-    // public static readonly SortOptions<SnippetItem> COPY_NEW_TO_OLD = new("6", "Copy (New to Old)");
+    public static readonly SortOptions COPIED_NEW_TO_OLD = new(
+        "6", 
+        "Copy (New to Old)",
+        items => items
+            .OrderByDescending(item => item.LastCopied)
+    );
     
     
     private static SortOptions[] allOptions = new[]
@@ -56,6 +61,7 @@ public class SortOptions
         CREATED_OLD_TO_NEW,
         UPDATED_NEW_TO_OLD,
         UPDATED_OLD_TO_NEW,
+        COPIED_NEW_TO_OLD,
         TITLE_A_TO_Z,
         TITLE_Z_TO_A
     };

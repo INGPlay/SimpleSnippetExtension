@@ -64,13 +64,19 @@ public class SnippetItem
     {
         this.Id = Guid.NewGuid().ToString();
         this.Created = DateTime.UtcNow;
+        this.LastUpdated = DateTime.UtcNow;     // 이거 안 넣으면 MinValue로 표시됨
+        return this;
+    }
+
+    public SnippetItem makeLastUpdatedModel()
+    {
         this.LastUpdated = DateTime.UtcNow;
         return this;
     }
 
-    public SnippetItem makeUpdateModel()
+    public SnippetItem makeLastCopiedModel()
     {
-        this.LastUpdated = DateTime.UtcNow;
+        this.LastCopied = DateTime.UtcNow;
         return this;
     }
     

@@ -20,6 +20,7 @@ public class SettingsManager : JsonSettingsManager
         SortOptionChoice(SortOptions.UPDATED_OLD_TO_NEW),       // 3
         SortOptionChoice(SortOptions.TITLE_A_TO_Z),             // 4
         SortOptionChoice(SortOptions.TITLE_Z_TO_A),             // 5
+        SortOptionChoice(SortOptions.COPIED_NEW_TO_OLD)         // 6
     };
 
     private static ChoiceSetSetting.Choice SortOptionChoice(SortOptions sortOption)
@@ -40,7 +41,7 @@ public class SettingsManager : JsonSettingsManager
         );
         if (!Settings.TryGetSetting<string>(_sortEmpty.Key, out _))     // default setting
         {
-            _sortEmpty.Value = sortOptions[0].Value;
+            _sortEmpty.Value = SortOptions.CREATED_NEW_TO_OLD.Id;
         }
         
         
@@ -52,7 +53,7 @@ public class SettingsManager : JsonSettingsManager
         );
         if (!Settings.TryGetSetting<string>(_sortSearching.Key, out _))     // default setting
         {
-            _sortSearching.Value = sortOptions[4].Value;
+            _sortSearching.Value = SortOptions.TITLE_A_TO_Z.Id;
         }
         
         Settings.Add(_sortEmpty);
