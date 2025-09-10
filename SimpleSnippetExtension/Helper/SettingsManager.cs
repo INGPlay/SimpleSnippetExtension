@@ -8,8 +8,7 @@ namespace SimpleSnippetExtension.Helper;
 public class SettingsManager : JsonSettingsManager
 {
     public CommandManager CommandManager { get; private set; }
-
-    private readonly ChoiceSetSetting _sortEmpty;
+    
     private readonly ChoiceSetSetting _sortSearching;
 
     private readonly List<ChoiceSetSetting.Choice> sortOptions = new List<ChoiceSetSetting.Choice>()
@@ -33,44 +32,16 @@ public class SettingsManager : JsonSettingsManager
         CommandManager = new CommandManager();
         FilePath = SettingsJsonPath();
         
-        _sortEmpty = new ChoiceSetSetting(
-            "0",
-            "Sorting when the search box is empty",
-            "Sorting when the search box is empty",
-            sortOptions
-        );
-        if (!Settings.TryGetSetting<string>(_sortEmpty.Key, out _))     // default setting
-        {
-            _sortEmpty.Value = SortOptions.CREATED_NEW_TO_OLD.Id;
-        }
-        
         
         _sortSearching = new ChoiceSetSetting(
             "1",
-            "Sorting while searching",
+            "Sort Snippets",
             "Sorting while searching",
             sortOptions
         );
-        if (!Settings.TryGetSetting<string>(_sortSearching.Key, out _))     // default setting
-        {
-            _sortSearching.Value = SortOptions.TITLE_A_TO_Z.Id;
-        }
         
-        Settings.Add(_sortEmpty);
+        // Settings.Add(_sortEmpty);
         Settings.Add(_sortSearching);
-    }
-
-    public SortOptions SortEmpty
-    {
-        get
-        {
-            string id;
-            var isGet = Settings.TryGetSetting(_sortEmpty.Key, out id);
-            if (isGet)
-                return SortOptions.FromId(id);
-
-            throw new Exception("SortEmpty Get Error");
-        }
     }
     
     public SortOptions SortSearching

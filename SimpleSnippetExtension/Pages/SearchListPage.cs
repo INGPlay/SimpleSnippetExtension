@@ -15,22 +15,6 @@ internal sealed class SearchListPage : ListPage
     private List<SnippetItem> _items;
 
     private SnippetCommandItem _commandItem;
-    
-    public override string SearchText
-    {
-        get => base.SearchText;
-        set
-        {
-            string oldText = base.SearchText;
-            string newText = value;
-            if (string.IsNullOrEmpty(oldText) || string.IsNullOrEmpty(newText))
-            {
-                RaiseItemsChanged();
-            }
-
-            base.SearchText = value;
-        }
-    }
 
     public SearchListPage(SettingsManager settingsManager)
     {
@@ -71,14 +55,7 @@ internal sealed class SearchListPage : ListPage
 
     public override IListItem[] GetItems()
     {
-        if (string.IsNullOrEmpty(this.SearchText))
-        {
-            _items = _commandManager.LoadSnippet(_settingsManager.SortEmpty);
-        }
-        else
-        {
-            _items = _commandManager.LoadSnippet(_settingsManager.SortSearching);
-        }
+        _items = _commandManager.LoadSnippet(_settingsManager.SortSearching);
 
         return makeList(_items);
     }
