@@ -42,6 +42,10 @@ public class SettingsManager : JsonSettingsManager
         
         // Settings.Add(_sortEmpty);
         Settings.Add(_sortSearching);
+
+        LoadSettings();
+
+        Settings.SettingsChanged += (s, a) => this.SaveSettings();
     }
     
     public SortOptions SortSearching
