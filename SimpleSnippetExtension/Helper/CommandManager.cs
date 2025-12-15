@@ -113,7 +113,7 @@ public class CommandManager
 
     public event Action<SnippetItem>? SnippetUpdated;
 
-    public void UpdateSnippet(SnippetItem snippetItem)
+    public async void UpdateSnippet(SnippetItem snippetItem)
     {
         if (snippetItem == null)
         {
@@ -127,7 +127,7 @@ public class CommandManager
                 return;
             }
 
-            var existingContent = File.ReadAllText(ListPath);
+            var existingContent = await File.ReadAllTextAsync(ListPath);
             var listItemList = JsonSerializer.Deserialize<List<SnippetItem>>(existingContent, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem) ?? [];
 
             // Id로 기존 항목을 찾아서 수정
@@ -141,7 +141,7 @@ public class CommandManager
                 listItemList.Add(snippetItem);
 
                 var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
-                File.WriteAllText(ListPath, listJson);
+                await File.WriteAllTextAsync(ListPath, listJson);
 
                 // 이벤트 호출
                 SnippetUpdated?.Invoke(snippetItem);

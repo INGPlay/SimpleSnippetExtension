@@ -16,9 +16,9 @@ public class SnippetItem
     public string Title { get; private set; }
 
     public string Content { get; private set; }
-    
+
     public string? SummaryContent { get; private set; }
-    
+
     public SnippetType Type { get; private set; }
 
     public DateTime? Created { get; private set; }
@@ -26,9 +26,9 @@ public class SnippetItem
     public DateTime? LastCopied { get; private set; }
 
     public SnippetItem(
-        string? title, 
-        string? content, 
-        string? id = "", 
+        string? title,
+        string? content,
+        string? id = "",
         SnippetType type = SnippetType.Text,
         DateTime? created = null,
         DateTime? lastUpdated = null,
@@ -55,30 +55,36 @@ public class SnippetItem
         LastCopied = lastCopied;
     }
 
-    public void makeId()
-    {
-        Id = Guid.NewGuid().ToString();
-    }
-
     public SnippetItem makeSaveModel()
     {
         this.Id = Guid.NewGuid().ToString();
-        this.Created = DateTime.UtcNow;
-        this.LastUpdated = DateTime.UtcNow;     // 이거 안 넣으면 MinValue로 표시됨
+        this.Created = DateTime.Now;
+        this.LastUpdated = DateTime.Now;     // 이거 안 넣으면 MinValue로 표시됨
         return this;
     }
 
     public SnippetItem makeLastUpdatedModel()
     {
-        this.LastUpdated = DateTime.UtcNow;
+        this.LastUpdated = DateTime.Now;
+        return this;
+    }
+
+    public SnippetItem updateModel(
+        string title,
+        string content,
+        SnippetType type)
+    {
+        this.Title = title;
+        this.Content = content;
+        this.Type = type;
         return this;
     }
 
     public SnippetItem makeLastCopiedModel()
     {
-        this.LastCopied = DateTime.UtcNow;
+        this.LastCopied = DateTime.Now;
         return this;
     }
-    
+
     public string ToJson() => JsonSerializer.Serialize(this, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
 }

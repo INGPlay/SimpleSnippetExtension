@@ -10,9 +10,12 @@ internal sealed class EditForm : FormContent
 {
     private readonly SettingsManager _settingsManager;
 
+    private readonly SnippetItem _snippetItem;
+
     public EditForm(SettingsManager settingsManager, SnippetItem snippetItem)
     {
         _settingsManager = settingsManager;
+        _snippetItem = snippetItem;
         
         string replacedContent = snippetItem.Content
                 .Replace("\\", "\\\\")      // SubmitForm의 payload에서 \ 기호로 인해 경로가 일부 삭제되는 것을 막기 위해 추가
@@ -27,14 +30,6 @@ internal sealed class EditForm : FormContent
                              "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
                              "version": "1.5",
                              "body": [
-                                 {
-                                     "type": "Input.Text",
-                                     "label": "Id",
-                                     "placeholder": "Type Title.",
-                                     "id": "Id",
-                                     "isVisible": false,
-                                     "value": "{{snippetItem.Id}}"
-                                 },
                                  {
                                      "type": "Input.Text",
                                      "label": "Title",
@@ -97,13 +92,18 @@ internal sealed class EditForm : FormContent
         {
             return CommandResult.KeepOpen();
         }
-        
-        SnippetItem snippetItem = new SnippetItem(
+
+        SnippetItem snippetItem = _snippetItem.updateModel(
             formInput["Title"]?.ToString() ?? "",
             formInput["Content"]?.ToString() ?? "",
-            formInput["Id"]?.ToString() ?? "",
             (SnippetType)Enum.Parse(typeof(SnippetType), formInput["Type"]?.ToString(), ignoreCase: true)
-            );
+        );
+        //SnippetItem snippetItem = new SnippetItem(
+        //    formInput["Title"]?.ToString() ?? "",
+        //    formInput["Content"]?.ToString() ?? "",
+        //    formInput["Id"]?.ToString() ?? "",
+        //    (SnippetType)Enum.Parse(typeof(SnippetType), formInput["Type"]?.ToString(), ignoreCase: true)
+        //    );
         return new SaveCommand(_settingsManager, snippetItem).Invoke(null);
     }
 }

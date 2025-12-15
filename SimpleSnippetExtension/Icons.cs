@@ -2,5 +2,5 @@
 
 internal sealed class Icons
 {
-    internal static IconInfo Logo { get; } = IconHelpers.FromRelativePath("C:\\Rider\\SimpleSnippetExtension\\SimpleSnippetExtension\\Assets\\Logo.svg");
+    internal static IconInfo Logo { get; } = IconHelpers.FromRelativePath("Assets\\Logo.svg");
 }

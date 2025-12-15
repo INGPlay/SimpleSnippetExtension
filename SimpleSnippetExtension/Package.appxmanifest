@@ -11,7 +11,7 @@
   <Identity
     Name="INGPlay.SimpleSnippetforCommandPalette"
     Publisher="CN=9F2EEB3A-6512-40C8-B96B-05E5C6BE430F"
-    Version="0.0.1.0" />
+    Version="0.0.2.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
@@ -35,7 +35,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Simple Snippet"
+        DisplayName="Simple Snippet for Command Palette"
         Description="Simple Snippet for Command Palette"
         BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png"    Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"   Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png">
