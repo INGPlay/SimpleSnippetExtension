@@ -59,4 +59,13 @@ public class SnippetCommandItem
                 KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.D)
         };
     }
+
+    public IContextItem CopySnippetItem(SnippetItem item)
+    {
+        return new CommandContextItem(new CopySnippetCommand(_settingsManager, item))
+        {
+            RequestedShortcut =
+                KeyChordHelpers.FromModifiers(ctrl: true, shift: true, vkey: VirtualKey.C)
+        };
+    }
 }

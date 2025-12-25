@@ -16,7 +16,8 @@ public class SaveCommand : IInvokableCommand
     {
         if (string.IsNullOrWhiteSpace(_item.Id))
         {
-            _commandManager.SaveSnippet(_item);
+            var snippetItem = _item.makeSaveModel();
+            _commandManager.SaveSnippet(snippetItem);
             
             return CommandResult.ShowToast(new ToastArgs()
             {

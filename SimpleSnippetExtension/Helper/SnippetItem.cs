@@ -60,9 +60,18 @@ public class SnippetItem
         this.Id = Guid.NewGuid().ToString();
         this.Created = DateTime.Now;
         this.LastUpdated = DateTime.Now;     // 이거 안 넣으면 MinValue로 표시됨
+        this.LastCopied = null;
         return this;
     }
 
+    public SnippetItem makeCopySnippetModel()
+    {
+        makeSaveModel();
+        this.Title = Title + " (Copied)";
+        return this;
+    }
+
+    // Update 시간 갱신
     public SnippetItem makeLastUpdatedModel()
     {
         this.LastUpdated = DateTime.Now;
