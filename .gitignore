@@ -4,3 +4,5 @@ SimpleSnippetExtension/obj
 .vs
 *.pfx
 SimpleSnippetExtension.sln.DotSettings.user
+SimpleSnippetExtension/AppPackages
+SimpleSnippetExtension/BundleArtifacts
