@@ -11,7 +11,7 @@
   <Identity
     Name="INGPlay.SimpleSnippetforCommandPalette"
     Publisher="CN=9F2EEB3A-6512-40C8-B96B-05E5C6BE430F"
-    Version="0.0.2.0" />
+    Version="0.0.3.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 

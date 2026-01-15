@@ -70,6 +70,7 @@ internal sealed class SnippetListItem : ListItem
         return [
             _commandItem.AddCommandItem(),
             _commandItem.EditCommandItem(item),
+            _commandItem.CopySnippetItem(item),
             _commandItem.DeleteCommandItem(item),
             _commandItem.OpenJsonCommandItem(),
         ];

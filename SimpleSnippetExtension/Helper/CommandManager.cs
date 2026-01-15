@@ -32,8 +32,7 @@ public class CommandManager
         {
             return;
         }
-        snippetItem = snippetItem.makeSaveModel();
-
+        
         try
         {
             List<SnippetItem> listItemList;
