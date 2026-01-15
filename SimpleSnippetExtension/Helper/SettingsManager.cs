@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using System.IO;
+using SimpleSnippetExtension.Constants;
 
 namespace SimpleSnippetExtension.Helper;
 
@@ -63,9 +64,6 @@ public class SettingsManager : JsonSettingsManager
     
     internal static string SettingsJsonPath()
     {
-        var directory = AppContext.BaseDirectory;
-        
-        // now, the state is just next to the exe
-        return Path.Combine(directory, "settings.json");
+        return Path.Combine(AppPath.DataDirectory, "settings.json");
     }
 }

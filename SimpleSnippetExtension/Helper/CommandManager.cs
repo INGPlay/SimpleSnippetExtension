@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using SimpleSnippetExtension.Constants;
 
 namespace SimpleSnippetExtension.Helper;
 
@@ -18,10 +19,7 @@ public class CommandManager
 
     internal static string ListJsonpath()
     {
-        var directory = AppContext.BaseDirectory;
-
-        // now, the state is just next to the exe
-        return Path.Combine(directory, "list.json");
+        return Path.Combine(AppPath.DataDirectory, "list.json");
     }
 
     public event Action<SnippetItem>? SnippetSaved;
