@@ -16,19 +16,9 @@ public class CommandManager
         ListPath = ListJsonpath();
     }
 
-    internal static string SettingsJsonPath()
-    {
-        var directory = Utilities.BaseSettingsPath("INGPlay.SimpleSnippet");
-        Directory.CreateDirectory(directory);
-
-        // now, the state is just next to the exe
-        return Path.Combine(directory, "settings.json");
-    }
-
     internal static string ListJsonpath()
     {
-        var directory = Utilities.BaseSettingsPath("INGPlay.SimpleSnippet");
-        Directory.CreateDirectory(directory);
+        var directory = AppContext.BaseDirectory;
 
         // now, the state is just next to the exe
         return Path.Combine(directory, "list.json");

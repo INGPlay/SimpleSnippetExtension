@@ -60,12 +60,11 @@ public class SettingsManager : JsonSettingsManager
             throw new Exception("SortSearching Get Error");
         }
     }
-
+    
     internal static string SettingsJsonPath()
     {
-        var directory = Utilities.BaseSettingsPath("INGPlay.SimpleSnippet");
-        Directory.CreateDirectory(directory);
-
+        var directory = AppContext.BaseDirectory;
+        
         // now, the state is just next to the exe
         return Path.Combine(directory, "settings.json");
     }
