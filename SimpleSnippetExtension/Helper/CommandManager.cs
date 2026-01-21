@@ -19,6 +19,7 @@ public class CommandManager
 
     internal static string ListJsonpath()
     {
+        Directory.CreateDirectory(AppPath.DataDirectory);   
         return Path.Combine(AppPath.DataDirectory, "list.json");
     }
 

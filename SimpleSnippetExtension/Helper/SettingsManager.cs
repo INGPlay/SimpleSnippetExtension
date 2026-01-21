@@ -64,6 +64,7 @@ public class SettingsManager : JsonSettingsManager
     
     internal static string SettingsJsonPath()
     {
+        Directory.CreateDirectory(AppPath.DataDirectory);   
         return Path.Combine(AppPath.DataDirectory, "settings.json");
     }
 }
