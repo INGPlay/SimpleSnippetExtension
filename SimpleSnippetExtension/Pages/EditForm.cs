@@ -41,7 +41,7 @@ internal sealed class EditForm : FormContent
                          {
                              "type": "AdaptiveCard",
                              "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
-                             "version": "1.5",
+                             "version": "1.6",
                              "body": [
                                  {
                                      "type": "Input.Text",
@@ -61,7 +61,7 @@ internal sealed class EditForm : FormContent
                                      "errorMessage": "Content is Required.",
                                      "isMultiline": true,
                                      "height": "stretch",
-                                     "value" : "${SnippetItem.Content}"
+                                     "value": "${SnippetItem.Content}"
                                  },
                                  {
                                      "type": "Input.ChoiceSet",
@@ -78,7 +78,7 @@ internal sealed class EditForm : FormContent
                                      ],
                                      "placeholder": "Choice a type.",
                                      "isRequired": true,
-                                     "id" : "Type",
+                                     "id": "Type",
                                      "value": "${SnippetItem.Type}",
                                      "errorMessage": "Type is Required."
                                  }
@@ -111,12 +111,7 @@ internal sealed class EditForm : FormContent
             formInput["Content"]?.ToString() ?? "",
             (SnippetType)Enum.Parse(typeof(SnippetType), formInput["Type"]?.ToString(), ignoreCase: true)
         );
-        //SnippetItem snippetItem = new SnippetItem(
-        //    formInput["Title"]?.ToString() ?? "",
-        //    formInput["Content"]?.ToString() ?? "",
-        //    formInput["Id"]?.ToString() ?? "",
-        //    (SnippetType)Enum.Parse(typeof(SnippetType), formInput["Type"]?.ToString(), ignoreCase: true)
-        //    );
+        
         return new SaveCommand(_settingsManager, snippetItem).Invoke(null);
     }
 }
