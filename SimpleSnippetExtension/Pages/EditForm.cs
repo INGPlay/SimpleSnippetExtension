@@ -24,6 +24,19 @@ internal sealed class EditForm : FormContent
                 .Replace("\t", "\\t")       // 탭 문자 처리
                 ;
 
+        DataJson = $$"""
+        {
+            "SnippetItem": {
+                "Title": "{{snippetItem.Title}}",
+                "Content": "{{replacedContent}}",
+                "Type": "{{snippetItem.Type}}"
+            },
+            "SnippetType": {
+                "Text": "{{SnippetType.Text}}",
+                "URL": "{{SnippetType.URL}}"
+            }
+        }
+        """;
         TemplateJson = $$"""
                          {
                              "type": "AdaptiveCard",
@@ -37,7 +50,7 @@ internal sealed class EditForm : FormContent
                                      "id": "Title",
                                      "isRequired": true,
                                      "errorMessage": "Title is Required.",
-                                     "value": "{{snippetItem.Title}}"
+                                     "value": "${SnippetItem.Title}"
                                  },
                                  {
                                      "type": "Input.Text",
@@ -48,25 +61,25 @@ internal sealed class EditForm : FormContent
                                      "errorMessage": "Content is Required.",
                                      "isMultiline": true,
                                      "height": "stretch",
-                                     "value" : "{{replacedContent}}"
+                                     "value" : "${SnippetItem.Content}"
                                  },
                                  {
                                      "type": "Input.ChoiceSet",
                                      "label": "Type",
                                      "choices": [
                                          {
-                                             "title": "{{SnippetType.Text}}",
-                                             "value": "{{SnippetType.Text}}"
+                                             "title": "${SnippetType.Text}",
+                                             "value": "${SnippetType.Text}"
                                          },
                                          {
-                                             "title": "{{SnippetType.URL}}",
-                                             "value": "{{SnippetType.URL}}"
+                                             "title": "${SnippetType.URL}",
+                                             "value": "${SnippetType.URL}"
                                          }
                                      ],
                                      "placeholder": "Choice a type.",
                                      "isRequired": true,
                                      "id" : "Type",
-                                     "value": "{{snippetItem.Type}}",
+                                     "value": "${SnippetItem.Type}",
                                      "errorMessage": "Type is Required."
                                  }
                              ],
