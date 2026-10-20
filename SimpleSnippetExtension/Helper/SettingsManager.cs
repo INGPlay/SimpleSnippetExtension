@@ -53,12 +53,8 @@ public class SettingsManager : JsonSettingsManager
     {
         get
         {
-            string id;
-            var isGet = Settings.TryGetSetting(_sortSearching.Key, out id);
-            if (isGet)
-                return SortOptions.FromId(id);
-
-            throw new Exception("SortSearching Get Error");
+            Settings.TryGetSetting(_sortSearching.Key, out string? id);
+            return SortOptions.FromId(id);
         }
     }
     

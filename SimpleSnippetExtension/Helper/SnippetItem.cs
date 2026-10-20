@@ -36,17 +36,15 @@ public class SnippetItem
     )
     {
         Id = id == null ? "" : id;
-        Title = title;
-        Content = content;
+        Title = title ?? "";
+        Content = content ?? "";
         Type = type;
 
         // Summary
-        SummaryContent = !string.IsNullOrEmpty(content)
-            ? content
+        SummaryContent = Content
                 .Replace("\r", " ").Replace("\n", " ")     // 줄바꿈 제거
-                .Replace("\t", " ")                        // 탭 제거
-            : "";
-        SummaryContent = content.Length > 150
+                .Replace("\t", " ");                       // 탭 제거
+        SummaryContent = Content.Length > 150
             ? string.Concat(SummaryContent.AsSpan(0, 150), "...")
             : SummaryContent;
 

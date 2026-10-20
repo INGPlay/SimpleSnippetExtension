@@ -66,8 +66,9 @@ public class SortOptions
         TITLE_Z_TO_A
     };
     
-    public static SortOptions? FromId(string id)
+    // 알 수 없는 id면 기본 정렬로 대체
+    public static SortOptions FromId(string? id)
     {
-        return allOptions.First(option => option.Id == id);
+        return allOptions.FirstOrDefault(option => option.Id == id) ?? CREATED_NEW_TO_OLD;
     }
 }
