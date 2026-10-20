@@ -84,4 +84,14 @@ public class SnippetCommandItem
             Title = "Copy " + item.Type
         };
     }
+
+    public static IContextItem HelpCommandItem()
+    {
+        return new CommandContextItem(new HelpPage())
+        {
+            Title = "Help",
+            RequestedShortcut =
+                KeyChordHelpers.FromModifiers(ctrl: true, vkey: VirtualKey.H)
+        };
+    }
 }

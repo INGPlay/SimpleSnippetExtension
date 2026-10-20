@@ -32,6 +32,7 @@ internal sealed class SearchListPage : DynamicListPage
             Subtitle = "Add a snippet with New Snippet (Ctrl+N).",
             MoreCommands = [
                 _commandItem.AddCommandItem(),
+                SnippetCommandItem.HelpCommandItem(),
             ]
         };
 
