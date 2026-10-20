@@ -53,7 +53,14 @@ public class SortOptions
         items => items
             .OrderByDescending(item => item.LastCopied)
     );
-    
+    public static readonly SortOptions COPY_COUNT_MOST_TO_LEAST = new(
+        "7",
+        "Copy Count (Most to Least)",
+        items => items
+            .OrderByDescending(item => item.CopyCount)
+            .ThenByDescending(item => item.LastCopied)
+    );
+
     
     private static SortOptions[] allOptions = new[]
     {
@@ -62,6 +69,7 @@ public class SortOptions
         UPDATED_NEW_TO_OLD,
         UPDATED_OLD_TO_NEW,
         COPIED_NEW_TO_OLD,
+        COPY_COUNT_MOST_TO_LEAST,
         TITLE_A_TO_Z,
         TITLE_Z_TO_A
     };

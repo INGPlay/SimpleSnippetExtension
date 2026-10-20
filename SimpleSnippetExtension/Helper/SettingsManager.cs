@@ -20,7 +20,8 @@ public class SettingsManager : JsonSettingsManager
         SortOptionChoice(SortOptions.UPDATED_OLD_TO_NEW),       // 3
         SortOptionChoice(SortOptions.TITLE_A_TO_Z),             // 4
         SortOptionChoice(SortOptions.TITLE_Z_TO_A),             // 5
-        SortOptionChoice(SortOptions.COPIED_NEW_TO_OLD)         // 6
+        SortOptionChoice(SortOptions.COPIED_NEW_TO_OLD),        // 6
+        SortOptionChoice(SortOptions.COPY_COUNT_MOST_TO_LEAST)  // 7
     };
 
     private static ChoiceSetSetting.Choice SortOptionChoice(SortOptions sortOption)

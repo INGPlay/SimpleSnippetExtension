@@ -25,6 +25,9 @@ public class SnippetItem
     public DateTime? LastUpdated { get; private set; }
     public DateTime? LastCopied { get; private set; }
 
+    // 복사(URL은 열기)한 횟수
+    public int CopyCount { get; private set; }
+
     public SnippetItem(
         string? title,
         string? content,
@@ -32,7 +35,8 @@ public class SnippetItem
         SnippetType type = SnippetType.Text,
         DateTime? created = null,
         DateTime? lastUpdated = null,
-        DateTime? lastCopied = null
+        DateTime? lastCopied = null,
+        int copyCount = 0
     )
     {
         Id = id == null ? "" : id;
@@ -51,6 +55,7 @@ public class SnippetItem
         Created = created ?? DateTime.MinValue;
         LastUpdated = lastUpdated ?? DateTime.MinValue;
         LastCopied = lastCopied;
+        CopyCount = copyCount;
     }
 
     public SnippetItem makeSaveModel()
@@ -59,6 +64,7 @@ public class SnippetItem
         this.Created = DateTime.Now;
         this.LastUpdated = DateTime.Now;     // 이거 안 넣으면 MinValue로 표시됨
         this.LastCopied = null;
+        this.CopyCount = 0;
         return this;
     }
 
@@ -89,6 +95,7 @@ public class SnippetItem
     public SnippetItem makeLastCopiedModel()
     {
         this.LastCopied = DateTime.Now;
+        this.CopyCount++;
         return this;
     }
 

@@ -131,7 +131,14 @@ internal sealed class SnippetListItem : ListItem
         {
             tagList.Add(
                 new Tag($"Last Copied : {makeViewDateFormat(item.LastCopied.Value)}")
-            ); 
+            );
+        }
+
+        if (item.CopyCount > 0)
+        {
+            tagList.Add(
+                new Tag($"Copied : {item.CopyCount} times")
+            );
         }
 
         return tagList.ToArray();
