@@ -81,7 +81,7 @@ internal sealed class SnippetListItem : ListItem
     // Markdown 특수문자는 escape하고, 줄바꿈은 강제 줄바꿈("  \n"), 앞쪽 공백·탭은 &nbsp;로 유지
     private static string makePlainMarkdown(string content)
     {
-        const string specialChars = "\\`*_{}[]()#+-.!|<>~";
+        const string specialChars = "\\`*_{}[]()#+-.!|<>~=&";
 
         // 편집 폼(WinUI TextBox)은 줄바꿈을 \r 하나로 저장하므로 \r\n, \r 모두 \n으로 맞춘다
         var lines = content.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n').Select(line =>
