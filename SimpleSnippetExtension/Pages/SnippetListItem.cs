@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;
@@ -43,16 +44,9 @@ internal sealed class SnippetListItem : ListItem
         Details = new Details()
         {
             Title = item.Title,
-            Body = item.Type.ToString(),
+            Body = makePlainMarkdown(item.Content),
             Metadata =
             [
-                new DetailsElement()
-                {
-                    Data = new DetailsLink()
-                    {
-                        Text = item.Content
-                    }
-                },
                 new DetailsElement()
                 {
                     Data = new DetailsTags()
@@ -80,6 +74,40 @@ internal sealed class SnippetListItem : ListItem
             _commandItem.DeleteCommandItem(item),
             _commandItem.OpenJsonCommandItem(),
         ];
+    }
+
+    // 내용 전체를 Markdown 서식 없이 그대로 표시
+    // Markdown 특수문자는 escape하고, 줄바꿈은 강제 줄바꿈("  \n"), 앞쪽 공백·탭은 &nbsp;로 유지
+    private static string makePlainMarkdown(string content)
+    {
+        const string specialChars = "\\`*_{}[]()#+-.!|<>~";
+
+        // 편집 폼(WinUI TextBox)은 줄바꿈을 \r 하나로 저장하므로 \r\n, \r 모두 \n으로 맞춘다
+        var lines = content.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n').Select(line =>
+        {
+            var builder = new StringBuilder();
+            var isIndent = true;
+            foreach (var c in line)
+            {
+                if (isIndent && (c == ' ' || c == '\t'))
+                {
+                    builder.Append(c == '\t' ? "&nbsp;&nbsp;&nbsp;&nbsp;" : "&nbsp;");
+                    continue;
+                }
+
+                isIndent = false;
+                if (specialChars.Contains(c))
+                {
+                    builder.Append('\\');
+                }
+
+                builder.Append(c);
+            }
+
+            return builder.ToString();
+        });
+
+        return string.Join("  \n", lines);
     }
 
     private ITag[] makeDateTag(SnippetItem item)
