@@ -12,6 +12,10 @@ public class SettingsManager : JsonSettingsManager
     
     private readonly ChoiceSetSetting _sortSearching;
 
+    private readonly ToggleSetting _pasteAfterCopy;
+
+    public bool PasteAfterCopy => _pasteAfterCopy.Value;
+
     private readonly List<ChoiceSetSetting.Choice> sortOptions = new List<ChoiceSetSetting.Choice>()
     {
         SortOptionChoice(SortOptions.CREATED_NEW_TO_OLD),       // 0
@@ -42,8 +46,16 @@ public class SettingsManager : JsonSettingsManager
             sortOptions
         );
         
+        _pasteAfterCopy = new ToggleSetting(
+            "2",
+            "Paste after copy",
+            "After copying a snippet, paste it into the window that was active before Command Palette",
+            false
+        );
+
         // Settings.Add(_sortEmpty);
         Settings.Add(_sortSearching);
+        Settings.Add(_pasteAfterCopy);
 
         LoadSettings();
 
