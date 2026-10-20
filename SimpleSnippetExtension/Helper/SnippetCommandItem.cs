@@ -72,16 +72,22 @@ public class SnippetCommandItem
     // URL 스니펫처럼 기본 동작이 복사가 아닌 경우를 위한 클립보드 복사 명령
     public IContextItem CopyContentCommandItem(SnippetItem item)
     {
-        return new CommandContextItem(new SnippetCopyTextCommand(_settingsManager, item)
+        return new CommandContextItem(MakeCopyTextCommand(_settingsManager, item))
+        {
+            Title = "Copy " + item.Type
+        };
+    }
+
+    // 복사 후 토스트를 띄우고 Command Palette를 숨기는 복사 명령
+    public static SnippetCopyTextCommand MakeCopyTextCommand(SettingsManager settingsManager, SnippetItem item)
+    {
+        return new SnippetCopyTextCommand(settingsManager, item)
         {
             Result = CommandResult.ShowToast(new ToastArgs()
             {
                 Message = "Copied to clipboard",
                 Result = CommandResult.Hide()
             })
-        })
-        {
-            Title = "Copy " + item.Type
         };
     }
 

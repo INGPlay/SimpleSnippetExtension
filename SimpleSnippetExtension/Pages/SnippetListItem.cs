@@ -16,14 +16,7 @@ internal sealed class SnippetListItem : ListItem
         : base(
             item.Type switch
             {
-                    SnippetType.Text => new SnippetCopyTextCommand(settingsManager, item)
-                    {
-                        Result = CommandResult.ShowToast(new ToastArgs()
-                        {
-                            Message = "Copied to clipboard",
-                            Result = CommandResult.Hide()
-                        })
-                    },
+                    SnippetType.Text => SnippetCommandItem.MakeCopyTextCommand(settingsManager, item),
                     SnippetType.URL => new SnippetOpenUrlCommand(settingsManager, item)
                     {
                         Result = CommandResult.Hide()
