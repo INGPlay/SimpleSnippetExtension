@@ -12,14 +12,15 @@ internal sealed class EditForm : FormContent
 
     private readonly SnippetItem _snippetItem;
 
-    public EditForm(SettingsManager settingsManager, SnippetItem snippetItem)
+    public EditForm(SettingsManager settingsManager, SnippetItem snippetItem, bool filledFromClipboard = false)
     {
         _settingsManager = settingsManager;
         _snippetItem = snippetItem;
-        
+
         // JsonObject로 직렬화해 Title·Content의 \, 따옴표, 줄바꿈 등을 모두 escape
         DataJson = new JsonObject
         {
+            ["FilledFromClipboard"] = filledFromClipboard,
             ["SnippetItem"] = new JsonObject
             {
                 ["Title"] = snippetItem.Title,
@@ -38,6 +39,13 @@ internal sealed class EditForm : FormContent
                              "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
                              "version": "1.6",
                              "body": [
+                                 {
+                                     "type": "TextBlock",
+                                     "$when": "${FilledFromClipboard}",
+                                     "text": "Content was filled from the clipboard.",
+                                     "wrap": true,
+                                     "isSubtle": true
+                                 },
                                  {
                                      "type": "Input.Text",
                                      "label": "Title",
@@ -113,13 +121,11 @@ internal sealed class EditForm : FormContent
 
 internal sealed class EditPage : ContentPage
 {
-    private readonly SettingsManager _settingsManager;
-    private readonly Func<SnippetItem> _makeSnippetItem;
+    private readonly Func<EditForm> _makeEditForm;
 
     public EditPage(SettingsManager settingsManager, SnippetItem snippetItem)
     {
-        _settingsManager = settingsManager;
-        _makeSnippetItem = () => snippetItem;
+        _makeEditForm = () => new EditForm(settingsManager, snippetItem);
         Name = string.IsNullOrWhiteSpace(snippetItem.Id)
             ? "New Snippet"
             : "Edit Snippet";
@@ -127,15 +133,23 @@ internal sealed class EditPage : ContentPage
 
     // 새 스니펫은 열 때마다 새 SnippetItem으로 폼을 만든다
     // (최상위 명령처럼 페이지가 재사용돼도 이전 저장 항목을 수정하지 않도록)
+    // 클립보드에 텍스트가 있으면 Content에 채우고 폼 위에 안내 문구를 표시
     public EditPage(SettingsManager settingsManager)
     {
-        _settingsManager = settingsManager;
-        _makeSnippetItem = () => new SnippetItem("", "");
+        _makeEditForm = () =>
+        {
+            var clipboardText = ClipboardHelper.GetText();
+            var filledFromClipboard = !string.IsNullOrWhiteSpace(clipboardText);
+            return new EditForm(
+                settingsManager,
+                new SnippetItem("", filledFromClipboard ? clipboardText : ""),
+                filledFromClipboard);
+        };
         Name = "New Snippet";
     }
 
     public override IContent[] GetContent()
     {
-        return [new EditForm(_settingsManager, _makeSnippetItem())];
+        return [_makeEditForm()];
     }
 }
