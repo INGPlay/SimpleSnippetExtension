@@ -24,6 +24,12 @@ public partial class SimpleSnippetExtensionCommandsProvider : CommandProvider
                     new CommandContextItem(_settingsManager.Settings.SettingsPage)
                 ]
             },
+            new CommandItem(new EditPage(_settingsManager))
+            {
+                Icon = this.Icon,
+                Title = "New Snippet",
+                Subtitle = DisplayName
+            },
         ];
     }
 

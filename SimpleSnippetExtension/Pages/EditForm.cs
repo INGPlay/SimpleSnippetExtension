@@ -113,23 +113,29 @@ internal sealed class EditForm : FormContent
 
 internal sealed class EditPage : ContentPage
 {
-    private readonly EditForm _editForm;
-    
+    private readonly SettingsManager _settingsManager;
+    private readonly Func<SnippetItem> _makeSnippetItem;
+
     public EditPage(SettingsManager settingsManager, SnippetItem snippetItem)
     {
-        _editForm = new EditForm(settingsManager, snippetItem);
-        Name = string.IsNullOrWhiteSpace(snippetItem.Id) 
-            ? "New Snippet" 
+        _settingsManager = settingsManager;
+        _makeSnippetItem = () => snippetItem;
+        Name = string.IsNullOrWhiteSpace(snippetItem.Id)
+            ? "New Snippet"
             : "Edit Snippet";
     }
 
-    public EditPage(SettingsManager settingsManager) 
-        : this(settingsManager, new SnippetItem("", ""))
+    // 새 스니펫은 열 때마다 새 SnippetItem으로 폼을 만든다
+    // (최상위 명령처럼 페이지가 재사용돼도 이전 저장 항목을 수정하지 않도록)
+    public EditPage(SettingsManager settingsManager)
     {
+        _settingsManager = settingsManager;
+        _makeSnippetItem = () => new SnippetItem("", "");
+        Name = "New Snippet";
     }
 
     public override IContent[] GetContent()
     {
-        return [_editForm];
+        return [new EditForm(_settingsManager, _makeSnippetItem())];
     }
 }
