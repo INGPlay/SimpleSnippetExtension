@@ -62,11 +62,10 @@ public class SnippetItem
         return this;
     }
 
+    // 원본은 그대로 두고 새 Id를 가진 복제본을 만든다
     public SnippetItem makeCopySnippetModel()
     {
-        makeSaveModel();
-        this.Title = Title + " (Copied)";
-        return this;
+        return new SnippetItem(Title + " (Copy)", Content, type: Type).makeSaveModel();
     }
 
     // Update 시간 갱신

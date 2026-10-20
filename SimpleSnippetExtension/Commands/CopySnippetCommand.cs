@@ -10,7 +10,7 @@ public class CopySnippetCommand : IInvokableCommand
     public event TypedEventHandler<object, IPropChangedEventArgs>? PropChanged;
     public IIconInfo Icon { get; }
     public string Id { get; }
-    public string Name { get; } = "Copy Snippet";
+    public string Name { get; } = "Duplicate Snippet";
     public ICommandResult Invoke(object sender)
     {
         var savedModel = _item.makeCopySnippetModel();
@@ -18,7 +18,7 @@ public class CopySnippetCommand : IInvokableCommand
 
         return CommandResult.ShowToast(new ToastArgs()
         {
-            Message = isSaved ? "Snippet copied successfully!" : "Failed to copy snippet. Check list.json.",
+            Message = isSaved ? "Snippet duplicated successfully!" : "Failed to duplicate snippet. Check list.json.",
             Result = CommandResult.KeepOpen()
         });
     }
