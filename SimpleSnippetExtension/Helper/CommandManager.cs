@@ -10,7 +10,7 @@ namespace SimpleSnippetExtension.Helper;
 
 public class CommandManager
 {
-    public readonly string ListPath;
+    public string ListPath { get; }
 
     public CommandManager()
     {
@@ -195,7 +195,7 @@ public class CommandManager
         return LoadSnippet(SortOptions.CREATED_NEW_TO_OLD);
     }
 
-    private List<SnippetItem> GetSortedList(List<SnippetItem> snippetItemList, SortOptions sortOptions)
+    private static List<SnippetItem> GetSortedList(List<SnippetItem> snippetItemList, SortOptions sortOptions)
     {
         return sortOptions.SortFunc(snippetItemList).ToList();
     }

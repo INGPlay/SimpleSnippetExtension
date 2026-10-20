@@ -4,7 +4,7 @@ using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-public class SnippetCopyTextCommand : CopyTextCommand
+public partial class SnippetCopyTextCommand : CopyTextCommand
 {
     private readonly SettingsManager _settingsManager;
     private readonly CommandManager _commandManager;

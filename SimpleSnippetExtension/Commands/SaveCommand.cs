@@ -1,18 +1,12 @@
-﻿using Windows.Foundation;
-using Microsoft.CommandPalette.Extensions;
+﻿using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-public class SaveCommand : IInvokableCommand
+public partial class SaveCommand : InvokableCommand
 {
-    public event TypedEventHandler<object, IPropChangedEventArgs>? PropChanged;
-    public IIconInfo Icon { get; }
-    public string Id { get; }
-    public string Name { get; } = "Save Snippet";
-
-    public ICommandResult Invoke(object sender)
+    public override ICommandResult Invoke()
     {
         if (string.IsNullOrWhiteSpace(_item.Id))
         {
@@ -41,5 +35,6 @@ public class SaveCommand : IInvokableCommand
     {
         _commandManager = settingsManager.CommandManager;
         _item = item;
+        Name = "Save Snippet";
     }
 }

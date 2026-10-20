@@ -8,12 +8,12 @@ using System.Linq;
 namespace SimpleSnippetExtension;
 
 // 호스트 기본 필터는 Title·Subtitle(요약 150자)만 보므로, 직접 필터링해 내용 전체를 검색한다
-internal sealed class SearchListPage : DynamicListPage
+internal sealed partial class SearchListPage : DynamicListPage
 {
     private readonly SettingsManager _settingsManager;
     private readonly CommandManager _commandManager;
 
-    private List<SnippetItem> _items;
+    private List<SnippetItem>? _items;
 
     private SnippetCommandItem _commandItem;
 

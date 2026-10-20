@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Microsoft.CommandPalette.Extensions;
@@ -7,7 +8,7 @@ using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-internal sealed class SnippetListItem : ListItem
+internal sealed partial class SnippetListItem : ListItem
 {
     private SettingsManager _settingsManager;
     private SnippetCommandItem _commandItem;
@@ -21,7 +22,7 @@ internal sealed class SnippetListItem : ListItem
                     {
                         Result = CommandResult.Hide()
                     },
-                    _ => throw new ArgumentOutOfRangeException(nameof(SnippetType))
+                    _ => throw new ArgumentOutOfRangeException(nameof(item))
             }
         )
     {
@@ -104,7 +105,7 @@ internal sealed class SnippetListItem : ListItem
         return string.Join("  \n", lines);
     }
 
-    private ITag[] makeDateTag(SnippetItem item)
+    private static ITag[] makeDateTag(SnippetItem item)
     {
         var tagList = Array.Empty<ITag>().ToList();
         if (item.Created.HasValue)
@@ -138,18 +139,18 @@ internal sealed class SnippetListItem : ListItem
         return tagList.ToArray();
     }
 
-    private String makeViewDateFormat(DateTime date)
+    private static String makeViewDateFormat(DateTime date)
     {
         if (date.Date == DateTime.Today)
         {
-            return $"Today, {date.ToString("hh:mm tt")}";
+            return $"Today, {date.ToString("hh:mm tt", CultureInfo.CurrentCulture)}";
         }
 
         if (date.Date.Year == DateTime.Today.Year)
         {
-            return $"{date.ToString("MMM dd, hh:mm tt")}";
+            return $"{date.ToString("MMM dd, hh:mm tt", CultureInfo.CurrentCulture)}";
         }
-        
-        return date.ToString("MMM d, yyyy, hh:mm tt");
+
+        return date.ToString("MMM d, yyyy, hh:mm tt", CultureInfo.CurrentCulture);
     }
 }

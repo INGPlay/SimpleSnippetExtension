@@ -1,17 +1,12 @@
-﻿using Windows.Foundation;
-using Microsoft.CommandPalette.Extensions;
+﻿using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-public class CopySnippetCommand : IInvokableCommand
+public partial class CopySnippetCommand : InvokableCommand
 {
-    public event TypedEventHandler<object, IPropChangedEventArgs>? PropChanged;
-    public IIconInfo Icon { get; }
-    public string Id { get; }
-    public string Name { get; } = "Duplicate Snippet";
-    public ICommandResult Invoke(object sender)
+    public override ICommandResult Invoke()
     {
         var savedModel = _item.makeCopySnippetModel();
         var isSaved = _commandManager.SaveSnippet(savedModel);
@@ -29,5 +24,6 @@ public class CopySnippetCommand : IInvokableCommand
     {
         _commandManager = settingsManager.CommandManager;
         _item = item;
+        Name = "Duplicate Snippet";
     }
 }

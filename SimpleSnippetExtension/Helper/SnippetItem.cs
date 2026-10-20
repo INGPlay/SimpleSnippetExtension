@@ -17,7 +17,7 @@ public class SnippetItem
 
     public string Content { get; private set; }
 
-    public string? SummaryContent { get; private set; }
+    public string SummaryContent { get; private set; }
 
     public SnippetType Type { get; private set; }
 

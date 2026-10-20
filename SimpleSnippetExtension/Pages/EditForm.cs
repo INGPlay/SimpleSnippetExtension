@@ -7,7 +7,7 @@ using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-internal sealed class EditForm : FormContent
+internal sealed partial class EditForm : FormContent
 {
     private readonly SettingsManager _settingsManager;
 
@@ -121,11 +121,11 @@ internal sealed class EditForm : FormContent
         SnippetItem snippetItem = _snippetItem.updateModel(
             formInput["Title"]?.ToString() ?? "",
             formInput["Content"]?.ToString() ?? "",
-            (SnippetType)Enum.Parse(typeof(SnippetType), formInput["Type"]?.ToString(), ignoreCase: true),
+            Enum.TryParse(formInput["Type"]?.ToString(), ignoreCase: true, out SnippetType type) && Enum.IsDefined(type) ? type : SnippetType.Text,
             parseTags(formInput["Tags"]?.ToString() ?? "")
         );
 
-        return new SaveCommand(_settingsManager, snippetItem).Invoke(null);
+        return new SaveCommand(_settingsManager, snippetItem).Invoke();
     }
 
     // "work, sql, ,Work" → ["work", "sql"] (공백 제거, 빈 값 제외, 대소문자 무시 중복 제거)
@@ -138,7 +138,7 @@ internal sealed class EditForm : FormContent
     }
 }
 
-internal sealed class EditPage : ContentPage
+internal sealed partial class EditPage : ContentPage
 {
     private readonly Func<EditForm> _makeEditForm;
 

@@ -1,18 +1,12 @@
-﻿using Windows.Foundation;
-using Microsoft.CommandPalette.Extensions;
+﻿using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-public class DeleteCommand : IInvokableCommand
+public partial class DeleteCommand : InvokableCommand
 {
-    public event TypedEventHandler<object, IPropChangedEventArgs>? PropChanged;
-    public IIconInfo Icon { get; }
-    public string Id { get; }
-    public string Name { get; } = "Delete Snippet";
-
-    public ICommandResult Invoke(object sender)
+    public override ICommandResult Invoke()
     {
         if (!_commandManager.DeleteSnippet(_item))
         {
@@ -32,5 +26,6 @@ public class DeleteCommand : IInvokableCommand
     {
         _commandManager = settingsManager.CommandManager;
         _item = item;
+        Name = "Delete Snippet";
     }
 }

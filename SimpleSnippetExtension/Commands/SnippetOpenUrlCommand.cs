@@ -3,11 +3,10 @@ using SimpleSnippetExtension.Helper;
 
 namespace SimpleSnippetExtension;
 
-public class SnippetOpenUrlCommand : InvokableCommand
+public partial class SnippetOpenUrlCommand : InvokableCommand
 {
     private readonly SnippetItem _item;
     private readonly CommandManager _commandManager;
-    private readonly string _target;
 
     public CommandResult Result { get; set; } = CommandResult.KeepOpen();
 
