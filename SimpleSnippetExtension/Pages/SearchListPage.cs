@@ -19,6 +19,10 @@ internal sealed class SearchListPage : DynamicListPage
 
     private SnippetFilters _filters;
 
+    // 마지막으로 읽은 list.json의 수정 시각과 정렬. 둘 다 그대로면 검색어·필터가 바뀌어도 파일을 다시 읽지 않는다
+    private DateTime _loadedWriteTime;
+    private string? _loadedSortId;
+
     public SearchListPage(SettingsManager settingsManager)
     {
         _settingsManager = settingsManager;
@@ -60,7 +64,19 @@ internal sealed class SearchListPage : DynamicListPage
 
     public override IListItem[] GetItems()
     {
-        _items = _commandManager.LoadSnippet(_settingsManager.SortSearching);
+        // 저장·삭제·복사와 Ctrl+J 직접 편집은 모두 파일 수정 시각을 바꾸므로 그때만 다시 읽는다
+        // (파일이 없으면 GetLastWriteTimeUtc는 고정값을 반환)
+        var sortOption = _settingsManager.SortSearching;
+        var writeTime = System.IO.File.GetLastWriteTimeUtc(_commandManager.ListPath);
+        if (_items == null
+            || _commandManager.LoadError != null
+            || writeTime != _loadedWriteTime
+            || sortOption.Id != _loadedSortId)
+        {
+            _items = _commandManager.LoadSnippet(sortOption);
+            _loadedWriteTime = writeTime;
+            _loadedSortId = sortOption.Id;
+        }
 
         // list.json을 읽지 못하면 빈 목록 대신 오류와 파일 열기 명령을 보여줌
         if (_commandManager.LoadError != null)
