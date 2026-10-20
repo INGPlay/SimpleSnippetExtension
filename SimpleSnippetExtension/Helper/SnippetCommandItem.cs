@@ -68,4 +68,20 @@ public class SnippetCommandItem
                 KeyChordHelpers.FromModifiers(ctrl: true, shift: true, vkey: VirtualKey.C)
         };
     }
+
+    // URL 스니펫처럼 기본 동작이 복사가 아닌 경우를 위한 클립보드 복사 명령
+    public IContextItem CopyContentCommandItem(SnippetItem item)
+    {
+        return new CommandContextItem(new SnippetCopyTextCommand(_settingsManager, item)
+        {
+            Result = CommandResult.ShowToast(new ToastArgs()
+            {
+                Message = "Copied to clipboard",
+                Result = CommandResult.Hide()
+            })
+        })
+        {
+            Title = "Copy " + item.Type
+        };
+    }
 }

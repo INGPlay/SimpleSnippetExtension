@@ -67,7 +67,13 @@ internal sealed class SnippetListItem : ListItem
 
     private IContextItem[] ContextItems(SnippetItem item)
     {
+        // Text는 기본 동작이 복사이므로 URL일 때만 복사 메뉴 추가
+        IContextItem[] copyItems = item.Type == SnippetType.URL
+            ? [_commandItem.CopyContentCommandItem(item)]
+            : [];
+
         return [
+            ..copyItems,
             _commandItem.AddCommandItem(),
             _commandItem.EditCommandItem(item),
             _commandItem.CopySnippetItem(item),

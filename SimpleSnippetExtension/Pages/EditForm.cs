@@ -63,11 +63,11 @@ internal sealed class EditForm : FormContent
                                      "label": "Type",
                                      "choices": [
                                          {
-                                             "title": "${SnippetType.Text}",
+                                             "title": "${SnippetType.Text} (Copy to clipboard)",
                                              "value": "${SnippetType.Text}"
                                          },
                                          {
-                                             "title": "${SnippetType.URL}",
+                                             "title": "${SnippetType.URL} (Open link, file or folder)",
                                              "value": "${SnippetType.URL}"
                                          }
                                      ],
