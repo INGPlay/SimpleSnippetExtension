@@ -3,7 +3,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace SimpleSnippetExtension;
 
-internal sealed class HelpPage : ContentPage
+internal sealed partial class HelpPage : ContentPage
 {
     private const string HelpMarkdown = """
         # Simple Snippet Help
@@ -22,6 +22,7 @@ internal sealed class HelpPage : ContentPage
         - Content supports multiple lines. Press Enter for a new line.
         - To save, press Enter in the Title field, or move to **Save** with Tab.
         - **New Snippet** fills Content with the clipboard text when there is any.
+        - **Tags**: separate with commas, e.g. `work, sql`.
 
         ## Shortcuts (snippet list)
         - **Ctrl+N**: New snippet
@@ -31,9 +32,13 @@ internal sealed class HelpPage : ContentPage
         - **Ctrl+J**: Open list.json
         - **Ctrl+H**: Help
 
-        ## Search and sort
-        - Search looks at the title and the full content. Title matches come first.
+        ## Search, filter and sort
+        - Search looks at the title, tags and the full content. Title and tag matches come first.
+        - Use the filter at the top of the list to show only Text, URL or one tag.
         - Change the sort order in the extension settings (**Sort Snippets**).
+
+        ## Paste after copy
+        - Turn on **Paste after copy** in the extension settings to paste the snippet into the previous window right after copying.
 
         ## Data
         - Snippets are stored in list.json (**Ctrl+J**). The previous version is kept as list.json.bak.
