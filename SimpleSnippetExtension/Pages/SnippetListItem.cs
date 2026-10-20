@@ -37,10 +37,10 @@ internal sealed class SnippetListItem : ListItem
         
         Title = item.Title;
         Subtitle = item.SummaryContent;
-        Tags = new[]
-        {
-            new Tag(item.Type.ToString())
-        };
+        Tags = [
+            new Tag(item.Type.ToString()),
+            ..item.Tags.Select(tag => new Tag("#" + tag))
+        ];
         Details = new Details()
         {
             Title = item.Title,

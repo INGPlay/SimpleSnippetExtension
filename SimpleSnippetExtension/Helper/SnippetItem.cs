@@ -28,6 +28,8 @@ public class SnippetItem
     // 복사(URL은 열기)한 횟수
     public int CopyCount { get; private set; }
 
+    public string[] Tags { get; private set; }
+
     public SnippetItem(
         string? title,
         string? content,
@@ -36,7 +38,8 @@ public class SnippetItem
         DateTime? created = null,
         DateTime? lastUpdated = null,
         DateTime? lastCopied = null,
-        int copyCount = 0
+        int copyCount = 0,
+        string[]? tags = null
     )
     {
         Id = id == null ? "" : id;
@@ -56,6 +59,7 @@ public class SnippetItem
         LastUpdated = lastUpdated ?? DateTime.MinValue;
         LastCopied = lastCopied;
         CopyCount = copyCount;
+        Tags = tags ?? [];
     }
 
     public SnippetItem makeSaveModel()
@@ -71,7 +75,7 @@ public class SnippetItem
     // 원본은 그대로 두고 새 Id를 가진 복제본을 만든다
     public SnippetItem makeCopySnippetModel()
     {
-        return new SnippetItem(Title + " (Copy)", Content, type: Type).makeSaveModel();
+        return new SnippetItem(Title + " (Copy)", Content, type: Type, tags: Tags).makeSaveModel();
     }
 
     // Update 시간 갱신
@@ -84,11 +88,13 @@ public class SnippetItem
     public SnippetItem updateModel(
         string title,
         string content,
-        SnippetType type)
+        SnippetType type,
+        string[] tags)
     {
         this.Title = title;
         this.Content = content;
         this.Type = type;
+        this.Tags = tags;
         return this;
     }
 

@@ -17,11 +17,14 @@ internal sealed class SearchListPage : DynamicListPage
 
     private SnippetCommandItem _commandItem;
 
+    private SnippetFilters _filters;
+
     public SearchListPage(SettingsManager settingsManager)
     {
         _settingsManager = settingsManager;
         _commandManager =  settingsManager.CommandManager;
         _commandItem = new SnippetCommandItem(_settingsManager);
+        _filters = setFilters([], "all");
 
         Name = "Search Snippets";
         Id = "SearchListPage";
@@ -71,6 +74,13 @@ internal sealed class SearchListPage : DynamicListPage
             ];
         }
 
+        // 태그가 추가·삭제됐으면 필터 목록을 다시 만든다 (고른 필터는 유지)
+        var tagNames = SnippetFilters.CollectTagNames(_items);
+        if (!tagNames.SequenceEqual(_filters.TagNames, StringComparer.OrdinalIgnoreCase))
+        {
+            _filters = setFilters(tagNames, _filters.CurrentFilterId);
+        }
+
         return makeList(_items);
     }
 
@@ -79,16 +89,38 @@ internal sealed class SearchListPage : DynamicListPage
         RaiseItemsChanged();
     }
 
+    private SnippetFilters setFilters(IReadOnlyList<string> tagNames, string currentFilterId)
+    {
+        if (_filters != null)
+        {
+            _filters.PropChanged -= onFiltersChanged;
+        }
+
+        var filters = new SnippetFilters(tagNames, currentFilterId);
+        filters.PropChanged += onFiltersChanged;
+        Filters = filters;
+        return filters;
+    }
+
+    // 사용자가 필터를 바꾸면 CurrentFilterId가 바뀌며 PropChanged가 온다
+    private void onFiltersChanged(object sender, IPropChangedEventArgs args)
+    {
+        RaiseItemsChanged();
+    }
+
     private IListItem[] makeList(List<SnippetItem> items)
     {
-        var listItems = items.Select(item => (item, listItem: new SnippetListItem(_settingsManager, item)));
+        var listItems = items
+            .Where(_filters.Matches)
+            .Select(item => (item, listItem: new SnippetListItem(_settingsManager, item)));
 
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
-            // 제목·요약은 기존처럼 퍼지 매칭, 내용은 전체에서 부분 일치
-            // 제목·요약에서 찾은 항목을 먼저 보여주고, 각 그룹 안에서는 설정한 정렬 순서를 유지 (OrderBy는 안정 정렬)
+            // 제목·요약·태그는 퍼지 매칭(태그는 ListItem.Tags로 점수에 포함), 내용은 전체에서 부분 일치
+            // 제목·요약·태그에서 찾은 항목을 먼저 보여주고, 각 그룹 안에서는 설정한 정렬 순서를 유지 (OrderBy는 안정 정렬)
             listItems = listItems
-                .Select(pair => (pair.item, pair.listItem, isTitleMatch: ListHelpers.ScoreListItem(SearchText, pair.listItem) > 0))
+                .Select(pair => (pair.item, pair.listItem, isTitleMatch: ListHelpers.ScoreListItem(SearchText, pair.listItem) > 0
+                    || pair.item.Tags.Any(tag => tag.Contains(SearchText, StringComparison.OrdinalIgnoreCase))))
                 .Where(match => match.isTitleMatch
                     || match.item.Content.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(match => match.isTitleMatch ? 0 : 1)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json.Nodes;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
@@ -25,7 +26,8 @@ internal sealed class EditForm : FormContent
             {
                 ["Title"] = snippetItem.Title,
                 ["Content"] = snippetItem.Content,
-                ["Type"] = snippetItem.Type.ToString()
+                ["Type"] = snippetItem.Type.ToString(),
+                ["Tags"] = string.Join(", ", snippetItem.Tags)
             },
             ["SnippetType"] = new JsonObject
             {
@@ -84,6 +86,13 @@ internal sealed class EditForm : FormContent
                                      "id": "Type",
                                      "value": "${SnippetItem.Type}",
                                      "errorMessage": "Type is Required."
+                                 },
+                                 {
+                                     "type": "Input.Text",
+                                     "label": "Tags",
+                                     "placeholder": "Comma separated, e.g. work, sql",
+                                     "id": "Tags",
+                                     "value": "${SnippetItem.Tags}"
                                  }
                              ],
                              "actions": [
@@ -112,10 +121,20 @@ internal sealed class EditForm : FormContent
         SnippetItem snippetItem = _snippetItem.updateModel(
             formInput["Title"]?.ToString() ?? "",
             formInput["Content"]?.ToString() ?? "",
-            (SnippetType)Enum.Parse(typeof(SnippetType), formInput["Type"]?.ToString(), ignoreCase: true)
+            (SnippetType)Enum.Parse(typeof(SnippetType), formInput["Type"]?.ToString(), ignoreCase: true),
+            parseTags(formInput["Tags"]?.ToString() ?? "")
         );
-        
+
         return new SaveCommand(_settingsManager, snippetItem).Invoke(null);
+    }
+
+    // "work, sql, ,Work" → ["work", "sql"] (공백 제거, 빈 값 제외, 대소문자 무시 중복 제거)
+    private static string[] parseTags(string tagsText)
+    {
+        return tagsText
+            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
     }
 }
 
