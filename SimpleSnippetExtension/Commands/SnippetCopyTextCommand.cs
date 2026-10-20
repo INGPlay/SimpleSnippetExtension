@@ -18,7 +18,7 @@ public class SnippetCopyTextCommand : CopyTextCommand
     {
         var lastCopied = _item.makeLastCopiedModel();
         _commandManager.UpdateSnippet(lastCopied);
-        ClipboardHelper.SetText(this.Text);
+        ClipboardHelper.SetText(SnippetVariables.Apply(this.Text));
         
         return (ICommandResult) this.Result;
     }
