@@ -14,11 +14,11 @@ public class CopySnippetCommand : IInvokableCommand
     public ICommandResult Invoke(object sender)
     {
         var savedModel = _item.makeCopySnippetModel();
-        _commandManager.SaveSnippet(savedModel);
-        
+        var isSaved = _commandManager.SaveSnippet(savedModel);
+
         return CommandResult.ShowToast(new ToastArgs()
         {
-            Message = "Snippet copied successfully!",
+            Message = isSaved ? "Snippet copied successfully!" : "Failed to copy snippet. Check list.json.",
             Result = CommandResult.KeepOpen()
         });
     }

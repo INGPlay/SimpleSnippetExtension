@@ -17,20 +17,20 @@ public class SaveCommand : IInvokableCommand
         if (string.IsNullOrWhiteSpace(_item.Id))
         {
             var snippetItem = _item.makeSaveModel();
-            _commandManager.SaveSnippet(snippetItem);
-            
+            var isSaved = _commandManager.SaveSnippet(snippetItem);
+
             return CommandResult.ShowToast(new ToastArgs()
             {
-                Message = "Snippet added successfully!",
+                Message = isSaved ? "Snippet added successfully!" : "Failed to add snippet. Check list.json.",
                 Result = CommandResult.GoBack()
             });
         }
 
         var lastUpdatedItem = _item.makeLastUpdatedModel();
-        _commandManager.UpdateSnippet(lastUpdatedItem);
+        var isUpdated = _commandManager.UpdateSnippet(lastUpdatedItem);
         return CommandResult.ShowToast(new ToastArgs()
         {
-            Message = "Snippet updated successfully!",
+            Message = isUpdated ? "Snippet updated successfully!" : "Failed to update snippet. Check list.json.",
             Result = CommandResult.GoBack()
         });
     }

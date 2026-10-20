@@ -25,11 +25,11 @@ public class CommandManager
 
     public event Action<SnippetItem>? SnippetSaved;
 
-    public void SaveSnippet(SnippetItem snippetItem)
+    public bool SaveSnippet(SnippetItem snippetItem)
     {
         if (snippetItem == null)
         {
-            return;
+            return false;
         }
         
         try
@@ -51,25 +51,26 @@ public class CommandManager
             listItemList.Add(snippetItem);
 
             // Serialize the updated list back to JSON and save it
-            var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
-            File.WriteAllText(ListPath, listJson);
+            WriteList(listItemList);
 
             // 이벤트 호출
             SnippetSaved?.Invoke(snippetItem);
+            return true;
         }
         catch (Exception ex)
         {
             ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
+            return false;
         }
     }
 
     public event Action<SnippetItem>? SnippetDeleted;
 
-    public void DeleteSnippet(SnippetItem snippetItem)
+    public bool DeleteSnippet(SnippetItem snippetItem)
     {
         if (snippetItem == null)
         {
-            return;
+            return false;
         }
 
         try
@@ -77,7 +78,7 @@ public class CommandManager
             // Check if the file exists and load existing history
             if (!File.Exists(ListPath))
             {
-                return;
+                return false;
             }
 
             var existingContent = File.ReadAllText(ListPath);
@@ -87,35 +88,36 @@ public class CommandManager
             listItemList.RemoveAll(item => item.Id == snippetItem.Id);
 
             // Serialize the updated list back to JSON and save it
-            var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
-            File.WriteAllText(ListPath, listJson);
+            WriteList(listItemList);
 
             // 이벤트 호출
             SnippetDeleted?.Invoke(snippetItem);
+            return true;
         }
         catch (Exception ex)
         {
             ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
+            return false;
         }
     }
 
     public event Action<SnippetItem>? SnippetUpdated;
 
-    public async void UpdateSnippet(SnippetItem snippetItem)
+    public bool UpdateSnippet(SnippetItem snippetItem)
     {
         if (snippetItem == null)
         {
-            return;
+            return false;
         }
 
         try
         {
             if (!File.Exists(ListPath))
             {
-                return;
+                return false;
             }
 
-            var existingContent = await File.ReadAllTextAsync(ListPath);
+            var existingContent = File.ReadAllText(ListPath);
             var listItemList = JsonSerializer.Deserialize<List<SnippetItem>>(existingContent, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem) ?? [];
 
             // Id로 기존 항목을 찾아서 수정
@@ -128,21 +130,46 @@ public class CommandManager
                 listItemList.RemoveAll(item => item.Id == snippetItem.Id);
                 listItemList.Add(snippetItem);
 
-                var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
-                await File.WriteAllTextAsync(ListPath, listJson);
+                WriteList(listItemList);
 
                 // 이벤트 호출
                 SnippetUpdated?.Invoke(snippetItem);
+                return true;
             }
+
+            return false;
         }
         catch (Exception ex)
         {
             ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
+            return false;
         }
     }
     
+    // 임시 파일에 먼저 쓰고 교체해서, 쓰는 도중 실패해도 list.json이 깨지지 않게 함
+    private void WriteList(List<SnippetItem> listItemList)
+    {
+        var listJson = JsonSerializer.Serialize(listItemList, SimpleSnippetJsonSerializationContext.Default.ListSnippetItem);
+        var tempPath = ListPath + ".tmp";
+        File.WriteAllText(tempPath, listJson);
+
+        if (File.Exists(ListPath))
+        {
+            // 기존 파일은 list.json.bak으로 백업
+            File.Replace(tempPath, ListPath, ListPath + ".bak");
+        }
+        else
+        {
+            File.Move(tempPath, ListPath);
+        }
+    }
+
+    // 마지막 LoadSnippet 실패 사유 (성공 시 null)
+    public string? LoadError { get; private set; }
+
     public List<SnippetItem> LoadSnippet(SortOptions sortOption)
     {
+        LoadError = null;
         try
         {
             if (!File.Exists(ListPath))
@@ -158,6 +185,7 @@ public class CommandManager
         catch (Exception ex)
         {
             ExtensionHost.LogMessage(new LogMessage() { Message = ex.ToString() });
+            LoadError = ex.Message;
             return [];
         }
     }

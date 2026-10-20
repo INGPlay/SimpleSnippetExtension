@@ -14,8 +14,15 @@ public class DeleteCommand : IInvokableCommand
 
     public ICommandResult Invoke(object sender)
     {
-        _commandManager.DeleteSnippet(_item);
-        
+        if (!_commandManager.DeleteSnippet(_item))
+        {
+            return CommandResult.ShowToast(new ToastArgs()
+            {
+                Message = "Failed to delete snippet. Check list.json.",
+                Result = CommandResult.KeepOpen()
+            });
+        }
+
         return CommandResult.KeepOpen();
     }
 

@@ -57,6 +57,18 @@ internal sealed class SearchListPage : ListPage
     {
         _items = _commandManager.LoadSnippet(_settingsManager.SortSearching);
 
+        // list.json을 읽지 못하면 빈 목록 대신 오류와 파일 열기 명령을 보여줌
+        if (_commandManager.LoadError != null)
+        {
+            return [
+                new ListItem(new OpenUrlCommand(_commandManager.ListPath) { Name = "Open Json File" })
+                {
+                    Title = "Failed to load list.json",
+                    Subtitle = _commandManager.LoadError
+                }
+            ];
+        }
+
         return makeList(_items);
     }
 
