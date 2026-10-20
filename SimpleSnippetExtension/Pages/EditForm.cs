@@ -50,7 +50,7 @@ internal sealed class EditForm : FormContent
                                  {
                                      "type": "Input.Text",
                                      "label": "Content",
-                                     "placeholder": "Content?",
+                                     "placeholder": "Content?\n\nMultiple lines are supported.",
                                      "id": "Content",
                                      "isRequired": true,
                                      "errorMessage": "Content is Required.",
