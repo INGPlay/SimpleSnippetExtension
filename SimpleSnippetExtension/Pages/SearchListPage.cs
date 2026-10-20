@@ -28,7 +28,7 @@ internal sealed class SearchListPage : ListPage
         EmptyContent = new CommandItem()
         {
             Title = "No Snippets",
-            Subtitle = "You can add snippets from the Add Snippet page.",
+            Subtitle = "Add a snippet with New Snippet (Ctrl+N).",
             MoreCommands = [
                 _commandItem.AddCommandItem(),
             ]
