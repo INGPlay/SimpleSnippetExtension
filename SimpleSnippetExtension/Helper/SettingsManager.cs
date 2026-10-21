@@ -18,14 +18,14 @@ public class SettingsManager : JsonSettingsManager
 
     private readonly List<ChoiceSetSetting.Choice> sortOptions = new List<ChoiceSetSetting.Choice>()
     {
-        SortOptionChoice(SortOptions.CREATED_NEW_TO_OLD),       // 0
-        SortOptionChoice(SortOptions.CREATED_OLD_TO_NEW),       // 1
-        SortOptionChoice(SortOptions.UPDATED_NEW_TO_OLD),       // 2
-        SortOptionChoice(SortOptions.UPDATED_OLD_TO_NEW),       // 3
-        SortOptionChoice(SortOptions.TITLE_A_TO_Z),             // 4
-        SortOptionChoice(SortOptions.TITLE_Z_TO_A),             // 5
-        SortOptionChoice(SortOptions.COPIED_NEW_TO_OLD),        // 6
-        SortOptionChoice(SortOptions.COPY_COUNT_MOST_TO_LEAST)  // 7
+        SortOptionChoice(SortOptions.CreatedNewToOld),       // 0
+        SortOptionChoice(SortOptions.CreatedOldToNew),       // 1
+        SortOptionChoice(SortOptions.UpdatedNewToOld),       // 2
+        SortOptionChoice(SortOptions.UpdatedOldToNew),       // 3
+        SortOptionChoice(SortOptions.TitleAToZ),             // 4
+        SortOptionChoice(SortOptions.TitleZToA),             // 5
+        SortOptionChoice(SortOptions.CopiedNewToOld),        // 6
+        SortOptionChoice(SortOptions.CopyCountMostToLeast)  // 7
     };
 
     private static ChoiceSetSetting.Choice SortOptionChoice(SortOptions sortOption)

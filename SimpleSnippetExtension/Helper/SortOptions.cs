@@ -17,43 +17,43 @@ public class SortOptions
         SortFunc = sortFunc;
     }
     
-    public static readonly SortOptions CREATED_NEW_TO_OLD = new(
+    public static readonly SortOptions CreatedNewToOld = new(
         "0", 
         "Created Date (New to Old)",
         items => items.OrderByDescending(item => item.Created)
     );
-    public static readonly SortOptions CREATED_OLD_TO_NEW = new(
+    public static readonly SortOptions CreatedOldToNew = new(
         "1", 
         "Created Date (Old to New)",
         items => items.OrderBy(item => item.Created)
     );
-    public static readonly SortOptions UPDATED_NEW_TO_OLD = new(
+    public static readonly SortOptions UpdatedNewToOld = new(
         "2", 
         "Updated Date (New to Old)",
         items => items.OrderByDescending(item => item.LastUpdated)
     );
-    public static readonly SortOptions UPDATED_OLD_TO_NEW = new(
+    public static readonly SortOptions UpdatedOldToNew = new(
         "3", 
         "Updated Date (Old to New)",
         items => items.OrderBy(item => item.LastUpdated)
     );
-    public static readonly SortOptions TITLE_A_TO_Z = new(
+    public static readonly SortOptions TitleAToZ = new(
         "4", 
         "Title (A to Z)",
         items => items.OrderBy(item => item.Title)
     );
-    public static readonly SortOptions TITLE_Z_TO_A = new(
+    public static readonly SortOptions TitleZToA = new(
         "5", 
         "Title (Z to A)",
         items => items.OrderByDescending(item => item.Title)
     );
-    public static readonly SortOptions COPIED_NEW_TO_OLD = new(
+    public static readonly SortOptions CopiedNewToOld = new(
         "6", 
         "Copy (New to Old)",
         items => items
             .OrderByDescending(item => item.LastCopied)
     );
-    public static readonly SortOptions COPY_COUNT_MOST_TO_LEAST = new(
+    public static readonly SortOptions CopyCountMostToLeast = new(
         "7",
         "Copy Count (Most to Least)",
         items => items
@@ -64,19 +64,19 @@ public class SortOptions
     
     private static SortOptions[] allOptions = new[]
     {
-        CREATED_NEW_TO_OLD,
-        CREATED_OLD_TO_NEW,
-        UPDATED_NEW_TO_OLD,
-        UPDATED_OLD_TO_NEW,
-        COPIED_NEW_TO_OLD,
-        COPY_COUNT_MOST_TO_LEAST,
-        TITLE_A_TO_Z,
-        TITLE_Z_TO_A
+        CreatedNewToOld,
+        CreatedOldToNew,
+        UpdatedNewToOld,
+        UpdatedOldToNew,
+        CopiedNewToOld,
+        CopyCountMostToLeast,
+        TitleAToZ,
+        TitleZToA
     };
     
     // 알 수 없는 id면 기본 정렬로 대체
     public static SortOptions FromId(string? id)
     {
-        return allOptions.FirstOrDefault(option => option.Id == id) ?? CREATED_NEW_TO_OLD;
+        return allOptions.FirstOrDefault(option => option.Id == id) ?? CreatedNewToOld;
     }
 }

@@ -192,7 +192,7 @@ public class CommandManager
 
     public List<SnippetItem> LoadSnippet()
     {
-        return LoadSnippet(SortOptions.CREATED_NEW_TO_OLD);
+        return LoadSnippet(SortOptions.CreatedNewToOld);
     }
 
     private static List<SnippetItem> GetSortedList(List<SnippetItem> snippetItemList, SortOptions sortOptions)
