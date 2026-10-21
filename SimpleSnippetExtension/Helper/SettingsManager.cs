@@ -10,6 +10,8 @@ public class SettingsManager : JsonSettingsManager
 {
     public CommandManager CommandManager { get; private set; }
     
+    private readonly ChoiceSetSetting _sortEmpty;
+
     private readonly ChoiceSetSetting _sortSearching;
 
     private readonly ToggleSetting _pasteAfterCopy;
@@ -39,11 +41,19 @@ public class SettingsManager : JsonSettingsManager
         FilePath = SettingsJsonPath();
         
         
-        _sortSearching = new ChoiceSetSetting(
+        // 기존 설정과 호환되도록 키 "1"은 검색어가 없을 때 정렬로 유지
+        _sortEmpty = new ChoiceSetSetting(
             "1",
             "Sort Snippets",
-            "Sorting while searching",
+            "Sorting when the search box is empty",
             sortOptions
+        );
+
+        _sortSearching = new ChoiceSetSetting(
+            "3",
+            "Sort Search Results",
+            "Sorting while searching. Best Match shows the closest matches first",
+            [SortOptionChoice(SortOptions.BestMatch), .. sortOptions]
         );
         
         _pasteAfterCopy = new ToggleSetting(
@@ -53,7 +63,7 @@ public class SettingsManager : JsonSettingsManager
             false
         );
 
-        // Settings.Add(_sortEmpty);
+        Settings.Add(_sortEmpty);
         Settings.Add(_sortSearching);
         Settings.Add(_pasteAfterCopy);
 
@@ -62,12 +72,21 @@ public class SettingsManager : JsonSettingsManager
         Settings.SettingsChanged += (s, a) => this.SaveSettings();
     }
     
+    public SortOptions SortEmpty
+    {
+        get
+        {
+            Settings.TryGetSetting(_sortEmpty.Key, out string? id);
+            return SortOptions.FromId(id);
+        }
+    }
+
     public SortOptions SortSearching
     {
         get
         {
             Settings.TryGetSetting(_sortSearching.Key, out string? id);
-            return SortOptions.FromId(id);
+            return SortOptions.FromSearchingId(id);
         }
     }
     

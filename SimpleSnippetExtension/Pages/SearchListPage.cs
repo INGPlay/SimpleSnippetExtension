@@ -66,7 +66,7 @@ internal sealed partial class SearchListPage : DynamicListPage
     {
         // 저장·삭제·복사와 Ctrl+J 직접 편집은 모두 파일 수정 시각을 바꾸므로 그때만 다시 읽는다
         // (파일이 없으면 GetLastWriteTimeUtc는 고정값을 반환)
-        var sortOption = _settingsManager.SortSearching;
+        var sortOption = _settingsManager.SortEmpty;
         var writeTime = System.IO.File.GetLastWriteTimeUtc(_commandManager.ListPath);
         if (_items == null
             || _commandManager.LoadError != null
@@ -126,20 +126,31 @@ internal sealed partial class SearchListPage : DynamicListPage
 
     private IListItem[] makeList(List<SnippetItem> items)
     {
-        var listItems = items
+        var isSearching = !string.IsNullOrWhiteSpace(SearchText);
+
+        // items는 검색어가 없을 때 정렬로 읽어 둔 목록이므로, 검색 중에는 검색 중 정렬로 다시 정렬
+        var searchSort = _settingsManager.SortSearching;
+        var isBestMatch = searchSort == SortOptions.BestMatch;
+        // Best Match는 아래에서 점수순으로 정렬하므로 다시 정렬하지 않는다
+        IEnumerable<SnippetItem> sortedItems = isSearching && !isBestMatch ? searchSort.SortFunc(items) : items;
+
+        var listItems = sortedItems
             .Where(_filters.Matches)
             .Select(item => (item, listItem: new SnippetListItem(_settingsManager, item)));
 
-        if (!string.IsNullOrWhiteSpace(SearchText))
+        if (isSearching)
         {
             // 제목·요약·태그는 퍼지 매칭(태그는 ListItem.Tags로 점수에 포함), 내용은 전체에서 부분 일치
-            // 제목·요약·태그에서 찾은 항목을 먼저 보여주고, 각 그룹 안에서는 설정한 정렬 순서를 유지 (OrderBy는 안정 정렬)
-            listItems = listItems
-                .Select(pair => (pair.item, pair.listItem, isTitleMatch: ListHelpers.ScoreListItem(SearchText, pair.listItem) > 0
-                    || pair.item.Tags.Any(tag => tag.Contains(SearchText, StringComparison.OrdinalIgnoreCase))))
+            // 제목·요약·태그에서 찾은 항목을 먼저 보여주고, Best Match면 그 안에서 퍼지 점수가 높은 순
+            // 나머지는 정렬 순서를 유지 (OrderBy는 안정 정렬)
+            var ordered = listItems
+                .Select(pair => (pair.item, pair.listItem, score: ListHelpers.ScoreListItem(SearchText, pair.listItem)))
+                .Select(match => (match.item, match.listItem, match.score, isTitleMatch: match.score > 0
+                    || match.item.Tags.Any(tag => tag.Contains(SearchText, StringComparison.OrdinalIgnoreCase))))
                 .Where(match => match.isTitleMatch
                     || match.item.Content.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(match => match.isTitleMatch ? 0 : 1)
+                .OrderBy(match => match.isTitleMatch ? 0 : 1);
+            listItems = (isBestMatch ? ordered.ThenByDescending(match => match.score) : ordered)
                 .Select(match => (match.item, match.listItem));
         }
 

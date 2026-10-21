@@ -35,7 +35,7 @@ internal sealed partial class HelpPage : ContentPage
         ## Search, filter and sort
         - Search looks at the title, tags and the full content. Title and tag matches come first.
         - Use the filter at the top of the list to show only Text, URL or one tag.
-        - Change the sort order in the extension settings (**Sort Snippets**).
+        - Change the sort order in the extension settings: **Sort Snippets** when the search box is empty, **Sort Search Results** while searching (default: Best Match).
 
         ## Paste after copy
         - Turn on **Paste after copy** in the extension settings to paste the snippet into the previous window right after copying.
